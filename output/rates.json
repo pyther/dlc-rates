@@ -18,20 +18,20 @@
     },
     "history": [
       {
-        "Effective Date": "2024-12-20",
+        "Effective Date": "2025-01-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2119,
+        "Distribution Rate": 5.2319,
         "Supply Rate": 10.29,
-        "Total Rate": 15.5019
+        "Total Rate": 15.5219
       },
       {
         "Effective Date": "2025-05-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 9.9997,
+        "Distribution Rate": 10.0197,
         "Supply Rate": 10.29,
-        "Total Rate": 20.2897
+        "Total Rate": 20.3097
       },
       {
         "Effective Date": "2025-06-01",
@@ -126,20 +126,20 @@
     },
     "history": [
       {
-        "Effective Date": "2024-12-20",
+        "Effective Date": "2025-01-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.26,
+        "Distribution Rate": 9.28,
         "Supply Rate": 9.66,
-        "Total Rate": 18.92
+        "Total Rate": 18.94
       },
       {
         "Effective Date": "2025-05-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 9.9997,
+        "Distribution Rate": 10.0197,
         "Supply Rate": 9.66,
-        "Total Rate": 19.6597
+        "Total Rate": 19.6797
       },
       {
         "Effective Date": "2025-06-01",
@@ -233,12 +233,12 @@
     },
     "history": [
       {
-        "Effective Date": "2024-12-20",
+        "Effective Date": "2025-01-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 9.9997,
+        "Distribution Rate": 10.0197,
         "Supply Rate": 10.85,
-        "Total Rate": 20.8497
+        "Total Rate": 20.8697
       },
       {
         "Effective Date": "2025-06-01",
