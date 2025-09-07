@@ -4,6 +4,8 @@ This project provides **best-effort estimates** of Duquesne Light Company (DLC) 
 
 All rates are shown in **cents per kilowatt-hour (¢/kWh)** and include both standard (flat) and time-of-use (TOU) supply rates.
 
+For a user-friendly view of current and historical rates, see the [DLC rates table](https://pyther.net/dlc-rates/).
+
 ## How It Works
 
 Official DLC tariff documents don't directly reflect the final amount on a customer's bill due to numerous riders and surcharges. This project estimates the final rate by:
