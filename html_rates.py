@@ -23,6 +23,7 @@ def read_csv(file_path, tou=False):
                     "period": row["Period"],
                     "distribution_rate": float(row["Distribution Rate"]),
                     "supply_rate": float(row["Supply Rate"]),
+                    "transmission_rate": float(row["Transmission Rate"]),
                     "total_rate": float(row["Total Rate"]),
                 })
             else:
@@ -31,6 +32,7 @@ def read_csv(file_path, tou=False):
                     "season": row["Season"],
                     "distribution_rate": float(row["Distribution Rate"]),
                     "supply_rate": float(row["Supply Rate"]),
+                    "transmission_rate": float(row["Transmission Rate"]),
                     "total_rate": float(row["Total Rate"]),
                 })
     # Sort newest to oldest
@@ -88,7 +90,7 @@ a:hover { text-decoration: underline; }
       <li><strong>Rider No. 10</strong> – State Tax Adjustment</li>
       <li><strong>Rider No. 15A</strong> – Phase IV Energy Efficiency and Conservation Surcharge</li>
     </ul>
-    <p><strong>Supply rates</strong> are pulled from the DLC website as published <em>Price to Compare (PTC)</em>, including transmission and applicable charges.</p>
+    <p><strong>Supply and Transmission rates</strong> are taken directly from the DLC tariff. DLC publishes a “Price to Compare” (PTC), which is simply the sum of Supply + Transmission. Because those values are already shown separately here, PTC is not displayed as its own column.</p>
   </details>
 
   <details>
@@ -113,17 +115,17 @@ a:hover { text-decoration: underline; }
         html += f'<div class="section" id="section-{cls}">\n'
         # Flat rates
         html += f"<h2>Flat Rates ({rate_definitions[cls]})</h2>\n"
-        html += f"<table>\n<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>\n"
+        html += f"<table>\n<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>\n"
         for i, r in enumerate(flat_rates.get(cls, [])):
             row_class = "extra-row" if i >= MAX_ROWS else ""
-            html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['total_rate']}</td></tr>\n"
+            html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['transmission_rate']}</td><td>{r['total_rate']}</td></tr>\n"
         if len(flat_rates.get(cls, [])) > MAX_ROWS:
             html += "<tr><td colspan='5'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>\n"
         html += "</table>\n"
 
         # TOU rates
         html += f"<h2>Time-of-Use Rates ({rate_definitions[cls]})</h2>\n"
-        html += f"<table>\n<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>\n"
+        html += f"<table>\n<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>\n"
 
         if cls in ("RA", "RH"):
             last_date = None
@@ -142,11 +144,11 @@ a:hover { text-decoration: underline; }
                     row_class += " extra-row"
                 if not alt:
                     row_class = row_class.replace("tou-alt","")
-                html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['period']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['total_rate']}</td></tr>\n"
+                html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['period']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['transmission_rate']}</td><td>{r['total_rate']}</td></tr>\n"
         else:
             for i, r in enumerate(tou_rates.get(cls, [])):
                 row_class = "extra-row" if i >= MAX_ROWS else ""
-                html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['period']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['total_rate']}</td></tr>\n"
+                html += f"<tr class='{row_class}'><td>{r['date']}</td><td>{r['season']}</td><td>{r['period']}</td><td>{r['distribution_rate']}</td><td>{r['supply_rate']}</td><td>{r['transmission_rate']}</td><td>{r['total_rate']}</td></tr>\n"
 
         if len(tou_rates.get(cls, [])) > MAX_ROWS:
             html += "<tr><td colspan='6'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>\n"

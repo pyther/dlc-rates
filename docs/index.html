@@ -40,7 +40,7 @@ a:hover { text-decoration: underline; }
       <li><strong>Rider No. 10</strong> – State Tax Adjustment</li>
       <li><strong>Rider No. 15A</strong> – Phase IV Energy Efficiency and Conservation Surcharge</li>
     </ul>
-    <p><strong>Supply rates</strong> are pulled from the DLC website as published <em>Price to Compare (PTC)</em>, including transmission and applicable charges.</p>
+    <p><strong>Supply and Transmission rates</strong> are taken directly from the DLC tariff. DLC publishes a “Price to Compare” (PTC), which is simply the sum of Supply + Transmission. Because those values are already shown separately here, PTC is not displayed as its own column.</p>
   </details>
 
   <details>
@@ -61,56 +61,56 @@ a:hover { text-decoration: underline; }
 <div class="section" id="section-RS">
 <h2>Flat Rates (Residential Service)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>9.9997</td><td>12.43</td><td>22.4297</td></tr>
-<tr class=''><td>2025-01-01</td><td>All</td><td>10.0197</td><td>10.85</td><td>20.8697</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-06-01</td><td>All</td><td>9.9997</td><td>9.7093</td><td>2.7187</td><td title='PTC (Supply+Transmission): 12.43'>22.4277</td></tr>
+<tr class=''><td>2025-01-01</td><td>All</td><td>10.0197</td><td>8.4472</td><td>2.4048</td><td title='PTC (Supply+Transmission): 10.85'>20.8717</td></tr>
 </table>
 <h2>Time-of-Use Rates (Residential Service)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Off-Peak</td><td>9.9997</td><td>7.87</td><td>17.8697</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Peak</td><td>9.9997</td><td>30.65</td><td>40.6497</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Super Off-Peak</td><td>9.9997</td><td>6.51</td><td>16.5097</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-06-01</td><td>All</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.7187</td><td>17.8712</td></tr>
+<tr class=''><td>2025-06-01</td><td>All</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.7187</td><td>40.6527</td></tr>
+<tr class=''><td>2025-06-01</td><td>All</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.7187</td><td>16.5141</td></tr>
 </table>
 </div>
 <div class="section" id="section-RH">
 <h2>Flat Rates (Residential Service Heating)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>9.26</td><td>11.27</td><td>20.53</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>11.27</td><td>21.2697</td></tr>
-<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>9.66</td><td>19.6797</td></tr>
-<tr class=''><td>2025-01-01</td><td>Winter</td><td>9.28</td><td>9.66</td><td>18.94</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>9.26</td><td>9.7093</td><td>1.5606</td><td title='PTC (Supply+Transmission): 11.27'>20.5299</td></tr>
+<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>1.5606</td><td title='PTC (Supply+Transmission): 11.27'>21.2696</td></tr>
+<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>8.4472</td><td>1.2097</td><td title='PTC (Supply+Transmission): 9.66'>19.6766</td></tr>
+<tr class=''><td>2025-01-01</td><td>Winter</td><td>9.28</td><td>8.4472</td><td>1.2097</td><td title='PTC (Supply+Transmission): 9.66'>18.9369</td></tr>
 </table>
 <h2>Time-of-Use Rates (Residential Service Heating)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>6.71</td><td>15.97</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>29.5</td><td>38.76</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>5.36</td><td>14.62</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>6.71</td><td>16.7097</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>29.5</td><td>39.4997</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>5.36</td><td>15.3597</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.1528</td><td>1.5605</td><td>15.9733</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>27.9343</td><td>1.5606</td><td>38.7549</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>3.7957</td><td>1.5605</td><td>14.6162</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>1.5605</td><td>16.713</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>1.5606</td><td>39.4946</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>1.5605</td><td>15.3559</td></tr>
 </table>
 </div>
 <div class="section" id="section-RA">
 <h2>Flat Rates (Residential Service Add-On Heat Pump)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>5.2119</td><td>11.95</td><td>17.1619</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>11.95</td><td>21.9497</td></tr>
-<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>10.29</td><td>20.3097</td></tr>
-<tr class=''><td>2025-01-01</td><td>Winter</td><td>5.2319</td><td>10.29</td><td>15.5219</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>5.2119</td><td>9.7093</td><td>2.2454</td><td title='PTC (Supply+Transmission): 11.95'>17.1666</td></tr>
+<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>2.2454</td><td title='PTC (Supply+Transmission): 11.95'>21.9544</td></tr>
+<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>8.4472</td><td>1.8447</td><td title='PTC (Supply+Transmission): 10.29'>20.3116</td></tr>
+<tr class=''><td>2025-01-01</td><td>Winter</td><td>5.2319</td><td>8.4472</td><td>1.8447</td><td title='PTC (Supply+Transmission): 10.29'>15.5238</td></tr>
 </table>
 <h2>Time-of-Use Rates (Residential Service Add-On Heat Pump)</h2>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>7.4</td><td>12.6119</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>30.18</td><td>35.3919</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>6.04</td><td>11.2519</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>7.4</td><td>17.3997</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>30.18</td><td>40.1797</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>6.04</td><td>16.0397</td></tr>
+<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.1528</td><td>2.2454</td><td>12.6101</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>27.9343</td><td>2.2454</td><td>35.3916</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>3.7957</td><td>2.2454</td><td>11.253</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.2454</td><td>17.3979</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.2454</td><td>40.1794</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.2454</td><td>16.0408</td></tr>
 </table>
 </div>
 

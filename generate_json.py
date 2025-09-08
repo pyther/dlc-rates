@@ -15,7 +15,7 @@ def read_csv(path):
     with open(path, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            for col in ["Distribution Rate", "Supply Rate", "Total Rate"]:
+            for col in ["Distribution Rate", "Supply Rate", "Transmission Rate", "Total Rate"]:
                 row[col] = float(row[col])
             rows.append(row)
     return rows

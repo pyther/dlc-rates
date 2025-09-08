@@ -41,6 +41,7 @@ def read_supply_flat(path):
         for row in reader:
             eff_date = datetime.strptime(row["Effective Date"], "%m/%d/%Y").date()
             rate = Decimal(row["Rate"])
+            transmission = Decimal(row["Transmission"])
             cls = row["Class"]
             if cls in ("RH", "RA"):
                 for season in ("Summer", "Winter"):
@@ -48,14 +49,16 @@ def read_supply_flat(path):
                         "Effective Date": eff_date,
                         "Class": cls,
                         "Season": season,
-                        "Supply Rate": rate
+                        "Supply Rate": rate,
+                        "Transmission Rate": transmission
                     })
             else:  # RS
                 records.append({
                     "Effective Date": eff_date,
                     "Class": cls,
                     "Season": "All",
-                    "Supply Rate": rate
+                    "Supply Rate": rate,
+                    "Transmission Rate": transmission
                 })
     return records
 
@@ -67,6 +70,7 @@ def read_supply_tou(path):
         for row in reader:
             eff_date = datetime.strptime(row["Effective Date"], "%m/%d/%Y").date()
             rate = Decimal(row["Rate"])
+            transmission = Decimal(row["Transmission"])
             cls = row["Class"]
             period = row["Period"]
             if cls in ("RH", "RA"):
@@ -76,7 +80,8 @@ def read_supply_tou(path):
                         "Class": cls,
                         "Season": season,
                         "Period": period,
-                        "Supply Rate": rate
+                        "Supply Rate": rate,
+                        "Transmission Rate": transmission
                     })
             else:  # RS
                 records.append({
@@ -84,7 +89,8 @@ def read_supply_tou(path):
                     "Class": cls,
                     "Season": "All",
                     "Period": period,
-                    "Supply Rate": rate
+                    "Supply Rate": rate,
+                    "Transmission Rate": transmission
                 })
     return records
 
@@ -152,7 +158,8 @@ def build_timeline(dist_records, supply_records, tou=False):
             srow = max(s_candidates, key=lambda r: r["Effective Date"])
             dist_rate = drow["Distribution Rate"]
             supply_rate = srow["Supply Rate"]
-            total_rate = dist_rate + supply_rate
+            transmission_rate = srow["Transmission Rate"]
+            total_rate = dist_rate + supply_rate + transmission_rate
 
             out = {
                 "Effective Date": date_item.isoformat(),
@@ -160,6 +167,7 @@ def build_timeline(dist_records, supply_records, tou=False):
                 "Season": current_season if cls in ("RH", "RA") else season,
                 "Distribution Rate": round(dist_rate, 4),
                 "Supply Rate": round(supply_rate, 4),
+                "Transmission Rate": round(transmission_rate, 4),
                 "Total Rate": round(total_rate, 4),
             }
             if tou:
@@ -178,7 +186,7 @@ def main():
     supply_records = read_supply_flat(SUPPLY_FILE)
     combined = build_timeline(dist_records, supply_records, tou=False)
     with open(RATES_CSV, "w", newline="") as f:
-        fieldnames = ["Effective Date", "Class", "Season", "Distribution Rate", "Supply Rate", "Total Rate"]
+        fieldnames = ["Effective Date", "Class", "Season", "Distribution Rate", "Supply Rate", "Transmission Rate", "Total Rate"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(combined)
@@ -187,7 +195,7 @@ def main():
     supply_tou_records = read_supply_tou(SUPPLY_TOU_FILE)
     combined_tou = build_timeline(dist_records, supply_tou_records, tou=True)
     with open(RATES_TOU_CSV, "w", newline="") as f:
-        fieldnames = ["Effective Date", "Class", "Season", "Period", "Distribution Rate", "Supply Rate", "Total Rate"]
+        fieldnames = ["Effective Date", "Class", "Season", "Period", "Distribution Rate", "Supply Rate", "Transmission Rate", "Total Rate"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(combined_tou)
