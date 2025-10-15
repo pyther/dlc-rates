@@ -53,6 +53,15 @@
         "Supply Rate": 9.7093,
         "Transmission Rate": 2.2454,
         "Total Rate": 17.1666
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Distribution Rate": 5.2119,
+        "Supply Rate": 11.0275,
+        "Transmission Rate": 2.2454,
+        "Total Rate": 18.4848
       }
     ],
     "tou_history": [
@@ -115,6 +124,36 @@
         "Supply Rate": 3.7957,
         "Transmission Rate": 2.2454,
         "Total Rate": 11.253
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Off-Peak",
+        "Distribution Rate": 5.2119,
+        "Supply Rate": 5.845,
+        "Transmission Rate": 2.2454,
+        "Total Rate": 13.3023
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Peak",
+        "Distribution Rate": 5.2119,
+        "Supply Rate": 31.7565,
+        "Transmission Rate": 2.2454,
+        "Total Rate": 39.2138
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 5.2119,
+        "Supply Rate": 4.3015,
+        "Transmission Rate": 2.2454,
+        "Total Rate": 11.7588
       }
     ]
   },
@@ -172,6 +211,15 @@
         "Supply Rate": 9.7093,
         "Transmission Rate": 1.5606,
         "Total Rate": 20.5299
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Distribution Rate": 9.26,
+        "Supply Rate": 11.0275,
+        "Transmission Rate": 1.5606,
+        "Total Rate": 21.8481
       }
     ],
     "tou_history": [
@@ -234,6 +282,36 @@
         "Supply Rate": 3.7957,
         "Transmission Rate": 1.5605,
         "Total Rate": 14.6162
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Off-Peak",
+        "Distribution Rate": 9.26,
+        "Supply Rate": 5.845,
+        "Transmission Rate": 1.5605,
+        "Total Rate": 16.6655
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Peak",
+        "Distribution Rate": 9.26,
+        "Supply Rate": 31.7565,
+        "Transmission Rate": 1.5606,
+        "Total Rate": 42.5771
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 9.26,
+        "Supply Rate": 4.3015,
+        "Transmission Rate": 1.5605,
+        "Total Rate": 15.122
       }
     ]
   },
@@ -272,6 +350,15 @@
         "Supply Rate": 9.7093,
         "Transmission Rate": 2.7187,
         "Total Rate": 22.4277
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RS",
+        "Season": "All",
+        "Distribution Rate": 9.9997,
+        "Supply Rate": 11.0275,
+        "Transmission Rate": 2.7187,
+        "Total Rate": 23.7459
       }
     ],
     "tou_history": [
@@ -304,6 +391,36 @@
         "Supply Rate": 3.7957,
         "Transmission Rate": 2.7187,
         "Total Rate": 16.5141
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Off-Peak",
+        "Distribution Rate": 9.9997,
+        "Supply Rate": 5.845,
+        "Transmission Rate": 2.7187,
+        "Total Rate": 18.5634
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Peak",
+        "Distribution Rate": 9.9997,
+        "Supply Rate": 31.7565,
+        "Transmission Rate": 2.7187,
+        "Total Rate": 44.4749
+      },
+      {
+        "Effective Date": "2025-12-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 9.9997,
+        "Supply Rate": 4.3015,
+        "Transmission Rate": 2.7187,
+        "Total Rate": 17.0199
       }
     ]
   }
