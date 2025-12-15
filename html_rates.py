@@ -180,9 +180,9 @@ function showMore(btn){{
 </script>
 <footer style="margin-top: 40px; font-size: 0.85em; color: #555;">
   <p>
-    &copy; 2025 Matthew Gyurgyik. This website is an independent project and is not affiliated with or endorsed by
+    This website is an independent project and is not affiliated with or endorsed by
     <a href="https://www.duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company (DLC)</a>.
-    All data is provided for informational purposes only and represents a best-effort estimate of residential electricity rates.
+    All data is provided "as is" for informational purposes only and represents my best effort estimate of residential electricity rates.
     Official rates, billing, and tariffs from DLC are the authoritative source.
     For questions regarding your bill or service, please contact DLC directly.
   </p>
