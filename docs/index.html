@@ -54,14 +54,15 @@ a:hover { text-decoration: underline; }
 </div>
 
 <div id="tabs">
-<div class="tab" data-class="RS">RS</div>
-<div class="tab" data-class="RH">RH</div>
-<div class="tab" data-class="RA">RA</div>
+<div class="tab" data-class="RS">Residential Service</div>
+<div class="tab" data-class="RH">Residential Service Heating</div>
+<div class="tab" data-class="RA">Residential Service Add-On Heat Pump</div>
 </div>
 <div class="section" id="section-RS">
 <h2>Flat Rates (Residential Service)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-01-01</td><td>All</td><td>10.0497</td><td>11.0275</td><td>2.7187</td><td>23.7959</td></tr>
 <tr class=''><td>2025-12-01</td><td>All</td><td>9.9997</td><td>11.0275</td><td>2.7187</td><td>23.7459</td></tr>
 <tr class=''><td>2025-06-01</td><td>All</td><td>9.9997</td><td>9.7093</td><td>2.7187</td><td>22.4277</td></tr>
 <tr class=''><td>2025-01-01</td><td>All</td><td>10.0197</td><td>8.4472</td><td>2.4048</td><td>20.8717</td></tr>
@@ -69,6 +70,9 @@ a:hover { text-decoration: underline; }
 <h2>Time-of-Use Rates (Residential Service)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-01-01</td><td>All</td><td>Off-Peak</td><td>10.0497</td><td>5.845</td><td>2.7187</td><td>18.6134</td></tr>
+<tr class=''><td>2026-01-01</td><td>All</td><td>Peak</td><td>10.0497</td><td>31.7565</td><td>2.7187</td><td>44.5249</td></tr>
+<tr class=''><td>2026-01-01</td><td>All</td><td>Super Off-Peak</td><td>10.0497</td><td>4.3015</td><td>2.7187</td><td>17.0699</td></tr>
 <tr class=''><td>2025-12-01</td><td>All</td><td>Off-Peak</td><td>9.9997</td><td>5.845</td><td>2.7187</td><td>18.5634</td></tr>
 <tr class=''><td>2025-12-01</td><td>All</td><td>Peak</td><td>9.9997</td><td>31.7565</td><td>2.7187</td><td>44.4749</td></tr>
 <tr class=''><td>2025-12-01</td><td>All</td><td>Super Off-Peak</td><td>9.9997</td><td>4.3015</td><td>2.7187</td><td>17.0199</td></tr>
@@ -81,6 +85,7 @@ a:hover { text-decoration: underline; }
 <h2>Flat Rates (Residential Service Heating)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>9.3101</td><td>11.0275</td><td>1.5606</td><td>21.8982</td></tr>
 <tr class=''><td>2025-12-01</td><td>Winter</td><td>9.26</td><td>11.0275</td><td>1.5606</td><td>21.8481</td></tr>
 <tr class=''><td>2025-11-01</td><td>Winter</td><td>9.26</td><td>9.7093</td><td>1.5606</td><td>20.5299</td></tr>
 <tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>1.5606</td><td>21.2696</td></tr>
@@ -90,21 +95,25 @@ a:hover { text-decoration: underline; }
 <h2>Time-of-Use Rates (Residential Service Heating)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.845</td><td>1.5605</td><td>16.6655</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>31.7565</td><td>1.5606</td><td>42.5771</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>4.3015</td><td>1.5605</td><td>15.122</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.1528</td><td>1.5605</td><td>15.9733</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>27.9343</td><td>1.5606</td><td>38.7549</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>3.7957</td><td>1.5605</td><td>14.6162</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>1.5605</td><td>16.713</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>1.5606</td><td>39.4946</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>1.5605</td><td>15.3559</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Off-Peak</td><td>9.3101</td><td>5.845</td><td>1.5605</td><td>16.7156</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Peak</td><td>9.3101</td><td>31.7565</td><td>1.5606</td><td>42.6272</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.3101</td><td>4.3015</td><td>1.5605</td><td>15.1721</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.845</td><td>1.5605</td><td>16.6655</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>31.7565</td><td>1.5606</td><td>42.5771</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>4.3015</td><td>1.5605</td><td>15.122</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.1528</td><td>1.5605</td><td>15.9733</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>27.9343</td><td>1.5606</td><td>38.7549</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>3.7957</td><td>1.5605</td><td>14.6162</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>1.5605</td><td>16.713</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>1.5606</td><td>39.4946</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>1.5605</td><td>15.3559</td></tr>
 </table>
 </div>
 <div class="section" id="section-RA">
 <h2>Flat Rates (Residential Service Add-On Heat Pump)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>5.2619</td><td>11.0275</td><td>2.2454</td><td>18.5348</td></tr>
 <tr class=''><td>2025-12-01</td><td>Winter</td><td>5.2119</td><td>11.0275</td><td>2.2454</td><td>18.4848</td></tr>
 <tr class=''><td>2025-11-01</td><td>Winter</td><td>5.2119</td><td>9.7093</td><td>2.2454</td><td>17.1666</td></tr>
 <tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>2.2454</td><td>21.9544</td></tr>
@@ -114,15 +123,18 @@ a:hover { text-decoration: underline; }
 <h2>Time-of-Use Rates (Residential Service Add-On Heat Pump)</h2>
 <table>
 <tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.845</td><td>2.2454</td><td>13.3023</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>31.7565</td><td>2.2454</td><td>39.2138</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>4.3015</td><td>2.2454</td><td>11.7588</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.1528</td><td>2.2454</td><td>12.6101</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>27.9343</td><td>2.2454</td><td>35.3916</td></tr>
-<tr class='tou-alt'><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>3.7957</td><td>2.2454</td><td>11.253</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.2454</td><td>17.3979</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.2454</td><td>40.1794</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.2454</td><td>16.0408</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Off-Peak</td><td>5.2619</td><td>5.845</td><td>2.2454</td><td>13.3523</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Peak</td><td>5.2619</td><td>31.7565</td><td>2.2454</td><td>39.2638</td></tr>
+<tr class=''><td>2026-01-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2619</td><td>4.3015</td><td>2.2454</td><td>11.8088</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.845</td><td>2.2454</td><td>13.3023</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>31.7565</td><td>2.2454</td><td>39.2138</td></tr>
+<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>4.3015</td><td>2.2454</td><td>11.7588</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.1528</td><td>2.2454</td><td>12.6101</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>27.9343</td><td>2.2454</td><td>35.3916</td></tr>
+<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>3.7957</td><td>2.2454</td><td>11.253</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.2454</td><td>17.3979</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.2454</td><td>40.1794</td></tr>
+<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.2454</td><td>16.0408</td></tr>
 </table>
 </div>
 

@@ -107,7 +107,7 @@ a:hover { text-decoration: underline; }
 """
     # Tab buttons
     for cls in classes:
-        html += f'<div class="tab" data-class="{cls}">{cls}</div>\n'
+        html += f'<div class="tab" data-class="{cls}">{rate_definitions[cls]}</div>\n'
     html += '</div>\n'
 
     # Sections per class

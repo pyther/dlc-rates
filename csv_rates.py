@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+
 import csv
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 DATA_DIR = "data"
@@ -12,6 +14,7 @@ SUPPLY_TOU_FILE = os.path.join(DATA_DIR, "supply_tou.csv")
 
 RATES_CSV = os.path.join(OUTPUT_DIR, "rates.csv")
 RATES_TOU_CSV = os.path.join(OUTPUT_DIR, "rates_tou.csv")
+LOOKAHEAD_DAYS = 60
 
 # --- Read distribution ---
 def read_distribution(path):
@@ -112,6 +115,10 @@ def add_season_boundaries(dist_records, supply_records):
 def build_timeline(dist_records, supply_records, tou=False):
     results = []
 
+    # Calculate Cutoff Date
+    today = datetime.now().date()
+    cutoff_date = today + timedelta(days=LOOKAHEAD_DAYS)
+
     if tou:
         classes = set((r["Class"], r["Season"], r["Period"]) for r in supply_records)
     else:
@@ -142,6 +149,10 @@ def build_timeline(dist_records, supply_records, tou=False):
                                [r["Effective Date"] for r in slist]))
 
         for date_item in dates:
+            # Skip dates that are too far in the future
+            if date_item > cutoff_date:
+                continue
+
             current_season = get_season(date_item)
 
             # RA/RH only print row if season matches
@@ -202,4 +213,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
