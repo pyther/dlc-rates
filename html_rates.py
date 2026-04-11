@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import csv
 import json
 from pathlib import Path
@@ -167,7 +169,7 @@ a:hover { text-decoration: underline; }
         for i, r in enumerate(flat_rates.get(cls, [])):
             row_class = "extra-row" if i >= MAX_ROWS else ""
             display_date = f"{r['date']} ({r['season']})" if cls in ("RA", "RH") else r['date']
-            html += f"<tr class='{row_class}'><td>{display_date}</td><td class='num'>{r['total_rate']}</td><td class='num'>{r['ptc_rate']}</td><td class='num'>{r['distribution_rate']}</td></tr>\n"
+            html += f"<tr class='{row_class}'><td>{display_date}</td><td class='num'>{r['total_rate']:.2f}</td><td class='num'>{r['ptc_rate']:.2f}</td><td class='num'>{r['distribution_rate']:.2f}</td></tr>\n"
 
         if len(flat_rates.get(cls, [])) > MAX_ROWS:
             html += f"<tr><td colspan='{flat_colspan}'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>\n"
@@ -200,7 +202,7 @@ a:hover { text-decoration: underline; }
             if is_new_group:
                 display_date = f"{r['date']} ({r['season']})" if cls in ("RA", "RH") else r['date']
 
-            html += f"<tr{class_attr}><td class='date-cell'><strong>{display_date}</strong></td><td>{r['period']}</td><td class='num'>{r['total_rate']}</td><td class='num'>{r['ptc_rate']}</td><td class='num'>{r['distribution_rate']}</td></tr>\n"
+            html += f"<tr{class_attr}><td class='date-cell'><strong>{display_date}</strong></td><td>{r['period']}</td><td class='num'>{r['total_rate']:.2f}</td><td class='num'>{r['ptc_rate']:.2f}</td><td class='num'>{r['distribution_rate']:.2f}</td></tr>\n"
 
         if len(tou_rates.get(cls, [])) > MAX_ROWS:
             html += f"<tr><td colspan='{tou_colspan}'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>\n"
