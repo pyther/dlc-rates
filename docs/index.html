@@ -3,23 +3,39 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Duquesne Light Company Electric Rates</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.5; }
 h1 { margin-bottom: 10px; }
-h2 { margin-top: 30px; }
-.tab { cursor: pointer; padding: 10px 20px; border: 1px solid #ccc; display: inline-block; margin-right: 5px; border-radius: 4px; background-color: #f9f9f9; }
-.tab.active { background-color: #e6e6e6; }
+h2 { margin-top: 30px; margin-bottom: 15px; }
+.tab { cursor: pointer; padding: 10px 20px; border: 1px solid #ccc; display: inline-block; margin-right: 5px; border-radius: 4px; background-color: #f9f9f9; font-weight: bold; }
+.tab.active { background-color: #e6e6e6; border-bottom: 2px solid #333; }
 .section { display: none; margin-top: 20px; }
 .section.active { display: block; }
-table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+
+/* Sub-tab Toggle Styling */
+.rate-type-toggle { margin-bottom: 20px; display: inline-flex; border-radius: 5px; overflow: hidden; border: 1px solid #0066cc; }
+.toggle-btn { padding: 8px 16px; cursor: pointer; border: none; background: white; color: #0066cc; font-size: 0.95em; font-weight: bold; margin: 0; outline: none; }
+.toggle-btn:not(:last-child) { border-right: 1px solid #0066cc; }
+.toggle-btn.active { background: #0066cc; color: white; }
+.rate-container { display: none; }
+.rate-container.active { display: block; }
+
+/* Chart Container */
+.chart-container { position: relative; height: 350px; width: 100%; max-width: 800px; margin-bottom: 30px; }
+
+table { border-collapse: collapse; width: 100%; max-width: 800px; }
 th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; font-size: 0.95em; }
 th { background-color: #f2f2f2; color: #333; }
+.num { text-align: right; }
+.group-start td { border-top: 2px solid #999; }
+.date-cell { color: #555; }
 a { color: #0066cc; text-decoration: none; }
 a:hover { text-decoration: underline; }
-.info { background-color: #ffffe0; padding: 15px; border-left: 5px solid #ffcc00; margin-bottom: 20px; }
+.info { background-color: #ffffe0; padding: 15px; border-left: 5px solid #ffcc00; margin-bottom: 20px; max-width: 1000px; }
 .info details { background-color: #f9f9f9; padding: 10px; margin-bottom: 10px; }
-.tou-alt { background-color: #e8e8e8; }
 .extra-row { display: none; }
 .show-more-btn { margin: 5px 0 15px 0; padding: 5px 10px; cursor: pointer; }
 </style>
@@ -30,17 +46,28 @@ a:hover { text-decoration: underline; }
 <div class="info">
   <p>This page provides a <strong>best-effort estimate</strong> of <a href="https://duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company (DLC)</a> residential electricity rates, shown in <strong>&cent;/kWh</strong>.</p>
 
-  <p>Distribution rates are <em>not officially published</em>; the calculation requires carefully reading the DLC tariff and making informed assumptions about what should be included. This page is intended for informational purposes only and <strong>may not match your actual bill</strong>. DLC’s billing and rates are the authoritative source.</p>
+  <p>This is an independent project. The calculations require carefully reviewing the DLC tariff and making informed assumptions. It is intended for informational purposes only and <strong>may not match actual bills</strong> perfectly. DLC’s official billing is always the authoritative source.</p>
 
   <details>
-    <summary><strong>Calculation Notes</strong></summary>
-    <p><strong>Distribution rates</strong> are derived from the DLC tariff for RS, RA, and RH classes and include:</p>
+    <summary><strong>How are these columns calculated?</strong></summary>
+    <p>The rates displayed are broken down as follows:</p>
     <ul>
-      <li><strong>Rider No. 5</strong> – Universal Service Charge</li>
-      <li><strong>Rider No. 10</strong> – State Tax Adjustment</li>
-      <li><strong>Rider No. 15A</strong> – Phase IV Energy Efficiency and Conservation Surcharge</li>
+      <li><strong>Total Rate:</strong> The bottom-line price per kWh (PTC + Distribution).</li>
+      <li><strong>Price to Compare (PTC):</strong> The cost of the actual electricity generation and transmission. In the raw tariff, this consists of two separate charges (Supply + Transmission), which are combined here. <br><br><em>A note on third-party suppliers:</em> While Pennsylvania allows consumers to choose an alternative supplier for this portion of the bill, extreme caution is recommended. Many third-party offers use temporary "teaser rates" that later transition into expensive variable rates, or include hidden monthly fees. The PTC shown here is the baseline default rate, which can be used to verify if an alternative offer provides genuine savings.</li>
+      <li><strong>Distribution:</strong> The cost to deliver power to a residence (poles, wires, infrastructure). This is paid to DLC regardless of who supplies the electricity. Because DLC does not publish a single consolidated "distribution rate," this figure is calculated by combining the base rate with the following riders:
+        <ul>
+          <li><strong>Rider No. 5</strong> &ndash; Universal Service Charge</li>
+          <li><strong>Rider No. 10</strong> &ndash; State Tax Adjustment</li>
+          <li><strong>Rider No. 15A</strong> &ndash; Phase IV Energy Efficiency and Conservation Surcharge</li>
+        </ul>
+      </li>
     </ul>
-    <p><strong>Supply and Transmission rates</strong> are taken directly from the DLC tariff. DLC publishes a “Price to Compare” (PTC), which is simply the sum of Supply + Transmission. Because those values are already shown separately here, PTC is not displayed as its own column.</p>
+  </details>
+
+  <details>
+    <summary><strong>A Note on the Financial Risk of Time-of-Use (TOU) Rates</strong></summary>
+    <p>While TOU plans are marketed as a way to save money, the risk-to-reward ratio rarely favors the consumer. The "Peak" rate penalty is so severe compared to the standard flat rate that the margins for actually saving money are incredibly thin.</p>
+    <p>Even for households with Electric Vehicles (EVs) that aggressively shift usage to overnight hours, the savings are often marginal at best. Because the peak rate is so expensive, a single mistake—such as accidentally charging a vehicle, running the AC, or doing laundry during a peak window—can instantly wipe out weeks of careful energy management. Consumers should strictly evaluate their ability to avoid peak-hour usage with zero margin for error before opting into these rates.</p>
   </details>
 
   <details>
@@ -54,91 +81,229 @@ a:hover { text-decoration: underline; }
 </div>
 
 <div id="tabs">
-<div class="tab" data-class="RS">Residential Service</div>
-<div class="tab" data-class="RH">Residential Service Heating</div>
-<div class="tab" data-class="RA">Residential Service Add-On Heat Pump</div>
+<div class="tab" data-class="RS">RS (Residential Service)</div>
+<div class="tab" data-class="RH">RH (Residential Heating)</div>
+<div class="tab" data-class="RA">RA (Residential Add-On Heat Pump)</div>
 </div>
 <div class="section" id="section-RS">
-<h2>Flat Rates (Residential Service)</h2>
+<h2>RS (Residential Service)</h2>
+
+        <div class="rate-type-toggle">
+            <button class="toggle-btn active" onclick="switchRateType(event, 'RS', 'flat')">Flat Rates</button>
+            <button class="toggle-btn" onclick="switchRateType(event, 'RS', 'tou')">Time-of-Use Rates</button>
+        </div>
+        <div id="RS-flat" class="rate-container active">
+<div class="chart-container"><canvas id="chart-RS"></canvas></div>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>All</td><td>10.0497</td><td>11.0275</td><td>2.7187</td><td>23.7959</td></tr>
-<tr class=''><td>2025-12-01</td><td>All</td><td>9.9997</td><td>11.0275</td><td>2.7187</td><td>23.7459</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>9.9997</td><td>9.7093</td><td>2.7187</td><td>22.4277</td></tr>
-<tr class=''><td>2025-01-01</td><td>All</td><td>10.0197</td><td>8.4472</td><td>2.4048</td><td>20.8717</td></tr>
+<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-06-01</td><td class='num'>23.7252</td><td class='num'>13.6755</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2026-01-01</td><td class='num'>23.7959</td><td class='num'>13.7462</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2025-12-01</td><td class='num'>23.7459</td><td class='num'>13.7462</td><td class='num'>9.9997</td></tr>
+<tr class=''><td>2025-06-01</td><td class='num'>22.4277</td><td class='num'>12.428</td><td class='num'>9.9997</td></tr>
+<tr class=''><td>2025-01-01</td><td class='num'>20.8717</td><td class='num'>10.852</td><td class='num'>10.0197</td></tr>
 </table>
-<h2>Time-of-Use Rates (Residential Service)</h2>
+</div>
+<div id="RS-tou" class="rate-container">
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>All</td><td>Off-Peak</td><td>10.0497</td><td>5.845</td><td>2.7187</td><td>18.6134</td></tr>
-<tr class=''><td>2026-01-01</td><td>All</td><td>Peak</td><td>10.0497</td><td>31.7565</td><td>2.7187</td><td>44.5249</td></tr>
-<tr class=''><td>2026-01-01</td><td>All</td><td>Super Off-Peak</td><td>10.0497</td><td>4.3015</td><td>2.7187</td><td>17.0699</td></tr>
-<tr class=''><td>2025-12-01</td><td>All</td><td>Off-Peak</td><td>9.9997</td><td>5.845</td><td>2.7187</td><td>18.5634</td></tr>
-<tr class=''><td>2025-12-01</td><td>All</td><td>Peak</td><td>9.9997</td><td>31.7565</td><td>2.7187</td><td>44.4749</td></tr>
-<tr class=''><td>2025-12-01</td><td>All</td><td>Super Off-Peak</td><td>9.9997</td><td>4.3015</td><td>2.7187</td><td>17.0199</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.7187</td><td>17.8712</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.7187</td><td>40.6527</td></tr>
-<tr class=''><td>2025-06-01</td><td>All</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.7187</td><td>16.5141</td></tr>
+<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr><td class='date-cell'><strong>2026-06-01</strong></td><td>Off-Peak</td><td class='num'>18.2498</td><td class='num'>8.2001</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.7369</td><td class='num'>35.6872</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.7171</td><td class='num'>6.6674</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2026-01-01</strong></td><td>Off-Peak</td><td class='num'>18.6134</td><td class='num'>8.5637</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.5249</td><td class='num'>34.4752</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>17.0699</td><td class='num'>7.0202</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-12-01</strong></td><td>Off-Peak</td><td class='num'>18.5634</td><td class='num'>8.5637</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.4749</td><td class='num'>34.4752</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>17.0199</td><td class='num'>7.0202</td><td class='num'>9.9997</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-06-01</strong></td><td>Off-Peak</td><td class='num'>17.8712</td><td class='num'>7.8715</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>40.6527</td><td class='num'>30.653</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.5141</td><td class='num'>6.5144</td><td class='num'>9.9997</td></tr>
 </table>
+</div>
 </div>
 <div class="section" id="section-RH">
-<h2>Flat Rates (Residential Service Heating)</h2>
+<h2>RH (Residential Heating)</h2>
+
+        <div class="rate-type-toggle">
+            <button class="toggle-btn active" onclick="switchRateType(event, 'RH', 'flat')">Flat Rates</button>
+            <button class="toggle-btn" onclick="switchRateType(event, 'RH', 'tou')">Time-of-Use Rates</button>
+        </div>
+        <div id="RH-flat" class="rate-container active">
+<div class="chart-container"><canvas id="chart-RH"></canvas></div>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>9.3101</td><td>11.0275</td><td>1.5606</td><td>21.8982</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>9.26</td><td>11.0275</td><td>1.5606</td><td>21.8481</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>9.26</td><td>9.7093</td><td>1.5606</td><td>20.5299</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>1.5606</td><td>21.2696</td></tr>
-<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>8.4472</td><td>1.2097</td><td>19.6766</td></tr>
-<tr class=''><td>2025-01-01</td><td>Winter</td><td>9.28</td><td>8.4472</td><td>1.2097</td><td>18.9369</td></tr>
-</table>
-<h2>Time-of-Use Rates (Residential Service Heating)</h2>
-<table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Off-Peak</td><td>9.3101</td><td>5.845</td><td>1.5605</td><td>16.7156</td></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Peak</td><td>9.3101</td><td>31.7565</td><td>1.5606</td><td>42.6272</td></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.3101</td><td>4.3015</td><td>1.5605</td><td>15.1721</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.845</td><td>1.5605</td><td>16.6655</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>31.7565</td><td>1.5606</td><td>42.5771</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>4.3015</td><td>1.5605</td><td>15.122</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>9.26</td><td>5.1528</td><td>1.5605</td><td>15.9733</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>9.26</td><td>27.9343</td><td>1.5606</td><td>38.7549</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>9.26</td><td>3.7957</td><td>1.5605</td><td>14.6162</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>1.5605</td><td>16.713</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>1.5606</td><td>39.4946</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>1.5605</td><td>15.3559</td></tr>
+<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-06-01 (Summer)</td><td class='num'>22.5671</td><td class='num'>12.5174</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2026-05-01 (Summer)</td><td class='num'>22.6378</td><td class='num'>12.5881</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2026-01-01 (Winter)</td><td class='num'>21.8982</td><td class='num'>12.5881</td><td class='num'>9.3101</td></tr>
+<tr class=''><td>2025-12-01 (Winter)</td><td class='num'>21.8481</td><td class='num'>12.5881</td><td class='num'>9.26</td></tr>
+<tr class=''><td>2025-11-01 (Winter)</td><td class='num'>20.5299</td><td class='num'>11.2699</td><td class='num'>9.26</td></tr>
+<tr class=''><td>2025-06-01 (Summer)</td><td class='num'>21.2696</td><td class='num'>11.2699</td><td class='num'>9.9997</td></tr>
+<tr class=''><td>2025-05-01 (Summer)</td><td class='num'>19.6766</td><td class='num'>9.6569</td><td class='num'>10.0197</td></tr>
+<tr class=''><td>2025-01-01 (Winter)</td><td class='num'>18.9369</td><td class='num'>9.6569</td><td class='num'>9.28</td></tr>
 </table>
 </div>
+<div id="RH-tou" class="rate-container">
+<table>
+<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr><td class='date-cell'><strong>2026-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.0916</td><td class='num'>7.0419</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.5788</td><td class='num'>34.5291</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.5589</td><td class='num'>5.5092</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2026-05-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.4552</td><td class='num'>7.4055</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>43.3668</td><td class='num'>33.3171</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.9117</td><td class='num'>5.862</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2026-01-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>16.7156</td><td class='num'>7.4055</td><td class='num'>9.3101</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>42.6272</td><td class='num'>33.3171</td><td class='num'>9.3101</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.1721</td><td class='num'>5.862</td><td class='num'>9.3101</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-12-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>16.6655</td><td class='num'>7.4055</td><td class='num'>9.26</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>42.5771</td><td class='num'>33.3171</td><td class='num'>9.26</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.122</td><td class='num'>5.862</td><td class='num'>9.26</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-11-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>15.9733</td><td class='num'>6.7133</td><td class='num'>9.26</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>38.7549</td><td class='num'>29.4949</td><td class='num'>9.26</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>14.6162</td><td class='num'>5.3562</td><td class='num'>9.26</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>16.713</td><td class='num'>6.7133</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.4946</td><td class='num'>29.4949</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.3559</td><td class='num'>5.3562</td><td class='num'>9.9997</td></tr>
+</table>
+</div>
+</div>
 <div class="section" id="section-RA">
-<h2>Flat Rates (Residential Service Add-On Heat Pump)</h2>
+<h2>RA (Residential Add-On Heat Pump)</h2>
+
+        <div class="rate-type-toggle">
+            <button class="toggle-btn active" onclick="switchRateType(event, 'RA', 'flat')">Flat Rates</button>
+            <button class="toggle-btn" onclick="switchRateType(event, 'RA', 'tou')">Time-of-Use Rates</button>
+        </div>
+        <div id="RA-flat" class="rate-container active">
+<div class="chart-container"><canvas id="chart-RA"></canvas></div>
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>5.2619</td><td>11.0275</td><td>2.2454</td><td>18.5348</td></tr>
-<tr class=''><td>2025-12-01</td><td>Winter</td><td>5.2119</td><td>11.0275</td><td>2.2454</td><td>18.4848</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>5.2119</td><td>9.7093</td><td>2.2454</td><td>17.1666</td></tr>
-<tr class=''><td>2025-06-01</td><td>Summer</td><td>9.9997</td><td>9.7093</td><td>2.2454</td><td>21.9544</td></tr>
-<tr class=''><td>2025-05-01</td><td>Summer</td><td>10.0197</td><td>8.4472</td><td>1.8447</td><td>20.3116</td></tr>
-<tr class=''><td>2025-01-01</td><td>Winter</td><td>5.2319</td><td>8.4472</td><td>1.8447</td><td>15.5238</td></tr>
+<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr class=''><td>2026-06-01 (Summer)</td><td class='num'>23.2519</td><td class='num'>13.2022</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2026-05-01 (Summer)</td><td class='num'>23.3226</td><td class='num'>13.2729</td><td class='num'>10.0497</td></tr>
+<tr class=''><td>2026-01-01 (Winter)</td><td class='num'>18.5348</td><td class='num'>13.2729</td><td class='num'>5.2619</td></tr>
+<tr class=''><td>2025-12-01 (Winter)</td><td class='num'>18.4848</td><td class='num'>13.2729</td><td class='num'>5.2119</td></tr>
+<tr class=''><td>2025-11-01 (Winter)</td><td class='num'>17.1666</td><td class='num'>11.9547</td><td class='num'>5.2119</td></tr>
+<tr class=''><td>2025-06-01 (Summer)</td><td class='num'>21.9544</td><td class='num'>11.9547</td><td class='num'>9.9997</td></tr>
+<tr class=''><td>2025-05-01 (Summer)</td><td class='num'>20.3116</td><td class='num'>10.2919</td><td class='num'>10.0197</td></tr>
+<tr class=''><td>2025-01-01 (Winter)</td><td class='num'>15.5238</td><td class='num'>10.2919</td><td class='num'>5.2319</td></tr>
 </table>
-<h2>Time-of-Use Rates (Residential Service Add-On Heat Pump)</h2>
+</div>
+<div id="RA-tou" class="rate-container">
 <table>
-<tr><th>Effective Date</th><th>Season</th><th>Period</th><th>Distribution (&cent;/kWh)</th><th>Supply (&cent;/kWh)</th><th>Transmission (&cent;/kWh)</th><th>Total (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Off-Peak</td><td>5.2619</td><td>5.845</td><td>2.2454</td><td>13.3523</td></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Peak</td><td>5.2619</td><td>31.7565</td><td>2.2454</td><td>39.2638</td></tr>
-<tr class=''><td>2026-01-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2619</td><td>4.3015</td><td>2.2454</td><td>11.8088</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.845</td><td>2.2454</td><td>13.3023</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>31.7565</td><td>2.2454</td><td>39.2138</td></tr>
-<tr class='tou-alt'><td>2025-12-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>4.3015</td><td>2.2454</td><td>11.7588</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Off-Peak</td><td>5.2119</td><td>5.1528</td><td>2.2454</td><td>12.6101</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Peak</td><td>5.2119</td><td>27.9343</td><td>2.2454</td><td>35.3916</td></tr>
-<tr class=''><td>2025-11-01</td><td>Winter</td><td>Super Off-Peak</td><td>5.2119</td><td>3.7957</td><td>2.2454</td><td>11.253</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Off-Peak</td><td>9.9997</td><td>5.1528</td><td>2.2454</td><td>17.3979</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Peak</td><td>9.9997</td><td>27.9343</td><td>2.2454</td><td>40.1794</td></tr>
-<tr class='tou-alt'><td>2025-06-01</td><td>Summer</td><td>Super Off-Peak</td><td>9.9997</td><td>3.7957</td><td>2.2454</td><td>16.0408</td></tr>
+<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
+<tr><td class='date-cell'><strong>2026-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.7765</td><td class='num'>7.7268</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.2636</td><td class='num'>35.2139</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.2438</td><td class='num'>6.1941</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2026-05-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>18.1401</td><td class='num'>8.0904</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.0516</td><td class='num'>34.0019</td><td class='num'>10.0497</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.5966</td><td class='num'>6.5469</td><td class='num'>10.0497</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2026-01-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>13.3523</td><td class='num'>8.0904</td><td class='num'>5.2619</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.2638</td><td class='num'>34.0019</td><td class='num'>5.2619</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.8088</td><td class='num'>6.5469</td><td class='num'>5.2619</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-12-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>13.3023</td><td class='num'>8.0904</td><td class='num'>5.2119</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.2138</td><td class='num'>34.0019</td><td class='num'>5.2119</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.7588</td><td class='num'>6.5469</td><td class='num'>5.2119</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-11-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>12.6101</td><td class='num'>7.3982</td><td class='num'>5.2119</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>35.3916</td><td class='num'>30.1797</td><td class='num'>5.2119</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.253</td><td class='num'>6.0411</td><td class='num'>5.2119</td></tr>
+<tr class='group-start'><td class='date-cell'><strong>2025-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.3979</td><td class='num'>7.3982</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>40.1794</td><td class='num'>30.1797</td><td class='num'>9.9997</td></tr>
+<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.0408</td><td class='num'>6.0411</td><td class='num'>9.9997</td></tr>
 </table>
+</div>
 </div>
 
 <script>
+// --- Chart.js Integration ---
+const flatRatesData = {"RA": [{"date": "2026-06-01", "season": "Summer", "distribution_rate": 10.0497, "ptc_rate": 13.2022, "total_rate": 23.2519}, {"date": "2026-05-01", "season": "Summer", "distribution_rate": 10.0497, "ptc_rate": 13.2729, "total_rate": 23.3226}, {"date": "2026-01-01", "season": "Winter", "distribution_rate": 5.2619, "ptc_rate": 13.2729, "total_rate": 18.5348}, {"date": "2025-12-01", "season": "Winter", "distribution_rate": 5.2119, "ptc_rate": 13.2729, "total_rate": 18.4848}, {"date": "2025-11-01", "season": "Winter", "distribution_rate": 5.2119, "ptc_rate": 11.9547, "total_rate": 17.1666}, {"date": "2025-06-01", "season": "Summer", "distribution_rate": 9.9997, "ptc_rate": 11.9547, "total_rate": 21.9544}, {"date": "2025-05-01", "season": "Summer", "distribution_rate": 10.0197, "ptc_rate": 10.2919, "total_rate": 20.3116}, {"date": "2025-01-01", "season": "Winter", "distribution_rate": 5.2319, "ptc_rate": 10.2919, "total_rate": 15.5238}], "RH": [{"date": "2026-06-01", "season": "Summer", "distribution_rate": 10.0497, "ptc_rate": 12.5174, "total_rate": 22.5671}, {"date": "2026-05-01", "season": "Summer", "distribution_rate": 10.0497, "ptc_rate": 12.5881, "total_rate": 22.6378}, {"date": "2026-01-01", "season": "Winter", "distribution_rate": 9.3101, "ptc_rate": 12.5881, "total_rate": 21.8982}, {"date": "2025-12-01", "season": "Winter", "distribution_rate": 9.26, "ptc_rate": 12.5881, "total_rate": 21.8481}, {"date": "2025-11-01", "season": "Winter", "distribution_rate": 9.26, "ptc_rate": 11.2699, "total_rate": 20.5299}, {"date": "2025-06-01", "season": "Summer", "distribution_rate": 9.9997, "ptc_rate": 11.2699, "total_rate": 21.2696}, {"date": "2025-05-01", "season": "Summer", "distribution_rate": 10.0197, "ptc_rate": 9.6569, "total_rate": 19.6766}, {"date": "2025-01-01", "season": "Winter", "distribution_rate": 9.28, "ptc_rate": 9.6569, "total_rate": 18.9369}], "RS": [{"date": "2026-06-01", "season": "All", "distribution_rate": 10.0497, "ptc_rate": 13.6755, "total_rate": 23.7252}, {"date": "2026-01-01", "season": "All", "distribution_rate": 10.0497, "ptc_rate": 13.7462, "total_rate": 23.7959}, {"date": "2025-12-01", "season": "All", "distribution_rate": 9.9997, "ptc_rate": 13.7462, "total_rate": 23.7459}, {"date": "2025-06-01", "season": "All", "distribution_rate": 9.9997, "ptc_rate": 12.428, "total_rate": 22.4277}, {"date": "2025-01-01", "season": "All", "distribution_rate": 10.0197, "ptc_rate": 10.852, "total_rate": 20.8717}]};
+
+function initCharts() {
+    const classes = ['RS', 'RH', 'RA'];
+
+    classes.forEach(cls => {
+        const ctx = document.getElementById('chart-' + cls);
+        if (!ctx) return;
+
+        const data = flatRatesData[cls] || [];
+
+        // Data is currently newest to oldest. Reverse it for chronological charting.
+        const chartData = [...data].reverse();
+
+        // For RH and RA, append the season to the date for the chart tooltip
+        const labels = chartData.map(d => (cls === 'RH' || cls === 'RA') ? d.date + ' (' + d.season + ')' : d.date);
+        const totalRates = chartData.map(d => d.total_rate);
+        const ptcRates = chartData.map(d => d.ptc_rate);
+        const distRates = chartData.map(d => d.distribution_rate);
+
+        new Chart(ctx, {
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Total Rate Trend',
+                        data: totalRates,
+                        borderColor: '#1e293b', /* Crisp Dark Slate */
+                        backgroundColor: '#1e293b',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        fill: false, /* No background fill */
+                        tension: 0.2
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Price to Compare (PTC)',
+                        data: ptcRates,
+                        backgroundColor: 'rgba(245, 158, 11, 0.8)', /* Warm Amber */
+                        borderColor: '#d97706',
+                        borderWidth: 1,
+                        stack: 'Stack 0',
+                        barPercentage: 0.5 /* Slims down the bar width */
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Distribution',
+                        data: distRates,
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)', /* Utility Blue */
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                        stack: 'Stack 0',
+                        barPercentage: 0.5 /* Slims down the bar width */
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    x: {
+                        stacked: true, /* Enable bar stacking horizontally */
+                        ticks: {
+                            maxTicksLimit: 12
+                        }
+                    },
+                    y: {
+                        stacked: true, /* Enable bar stacking vertically */
+                        beginAtZero: true,
+                        title: { display: true, text: 'Cents per kWh (¢)' }
+                    }
+                }
+            }
+        });
+    });
+}
+
+// Initialize charts after script loads
+window.addEventListener('DOMContentLoaded', initCharts);
+
+// --- UI Interaction Logic ---
+// Main Class Tabs
 const tabs = document.querySelectorAll('.tab');
 const sections = document.querySelectorAll('.section');
 
@@ -152,6 +317,19 @@ tabs.forEach(tab => {
 });
 tabs[0].click();
 
+// Sub-Tabs for Flat vs TOU
+function switchRateType(event, cls, type) {
+    const section = document.getElementById('section-' + cls);
+
+    // Update button states
+    section.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    // Update container visibility
+    section.querySelectorAll('.rate-container').forEach(c => c.classList.remove('active'));
+    document.getElementById(cls + '-' + type).classList.add('active');
+}
+
 function showMore(btn){
     const table = btn.closest('table');
     table.querySelectorAll('.extra-row').forEach(r => r.style.display = 'table-row');
@@ -162,7 +340,7 @@ function showMore(btn){
   <p>
     This website is an independent project and is not affiliated with or endorsed by
     <a href="https://www.duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company (DLC)</a>.
-    All data is provided "as is" for informational purposes only and represents my best effort estimate of residential electricity rates.
+    All data is provided "as is" for informational purposes only and represents a best-effort estimate of residential electricity rates.
     Official rates, billing, and tariffs from DLC are the authoritative source.
     For questions regarding your bill or service, please contact DLC directly.
   </p>
