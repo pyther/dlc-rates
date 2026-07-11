@@ -11,6 +11,7 @@ This repository maintains an archive of historical tariff filings and supplement
 #### Core Tariffs
 Standard schedule of rates and rules for electric service.
 
+* [Current Tariff No. 25 - Supplement 107](https://tariffs.pyther.net/2026/currenttariff_107_25.pdf)
 * [Current Tariff No. 25 - Supplement 101](https://tariffs.pyther.net/2026/currenttariff_101_25.pdf)
 * [Current Tariff No. 25 - Supplement 99](https://tariffs.pyther.net/2025/currenttariff_99_25.pdf)
 * [Current Tariff No. 25 - Supplement 96](https://tariffs.pyther.net/2025/currenttariff_96_25.pdf)
@@ -19,6 +20,10 @@ Standard schedule of rates and rules for electric service.
 
 #### Supplements & Riders
 Specific updates to riders and specialized charges.
+
+* **Supplement No. 107 to Tariff No. 25**
+  *Supplement No. 107 to Tariff No. 25 - Rider No. 22 – Distribution System Improvement Charge (“DSIC”) has increased from 1.39% to 2.17% for the period July 1, 2026, through September 30, 2026*
+  [Effective: July 1, 2026](https://tariffs.pyther.net/2026/currenttariff_107_25.pdf)
 
 * **Supplement No. 104 to Tariff No. 25**
   *Supplement No. 104 to Tariff No. 25 - Rider No. 15A - Phase V EE&C Surcharge Compliance Filing Effective 06.01.2026*
