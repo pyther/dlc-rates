@@ -21,6 +21,10 @@ Standard schedule of rates and rules for electric service.
 #### Supplements & Riders
 Specific updates to riders and specialized charges.
 
+* **Supplement No. 111 to Tariff No. 25**
+  *Rider No. 8 - Default Service Supply (DSS) Semi-Annual Update Effective 12.01.2026*
+  [Effective: December 1, 2026](https://tariffs.pyther.net/2026/supplementno-111totariffno-25-riderno-8-defautservicesupply(dss)semi-annualupdateeffective12-01-2026.pdf)
+
 * **Supplement No. 107 to Tariff No. 25**
   *Supplement No. 107 to Tariff No. 25 - Rider No. 22 – Distribution System Improvement Charge (“DSIC”) has increased from 1.39% to 2.17% for the period July 1, 2026, through September 30, 2026*
   [Effective: July 1, 2026](https://tariffs.pyther.net/2026/currenttariff_107_25.pdf)
@@ -49,4 +53,3 @@ Specific updates to riders and specialized charges.
 
 ### Maintenance Notice
 **Note:** This archive is maintained on a best-effort basis for historical reference. Updates may be delayed or missed. Not affiliated with Duquesne Light.
-a
