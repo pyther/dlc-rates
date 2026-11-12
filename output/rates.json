@@ -2,19 +2,19 @@
   "RA": {
     "current": {
       "flat": {
-        "Effective Date": "2026-07-01",
+        "Effective Date": "2026-11-01",
         "Class": "RA",
-        "Season": "Summer",
-        "Distribution Rate": 10.2473,
+        "Season": "Winter",
+        "Distribution Rate": 5.4059,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 23.4495
+        "Transmission Rate": 2.5195,
+        "Total Rate": 18.8822
       },
       "tou": {
-        "Season": "Summer",
-        "Off-Peak": 17.9741,
-        "Peak": 45.4612,
-        "Super Off-Peak": 16.4414
+        "Season": "Winter",
+        "Off-Peak": 13.4068,
+        "Peak": 40.8939,
+        "Super Off-Peak": 11.8741
       }
     },
     "history": [
@@ -22,100 +22,118 @@
         "Effective Date": "2025-01-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2266,
+        "Distribution Rate": 5.2133,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.8447,
-        "Total Rate": 15.5185
+        "Total Rate": 15.5052
       },
       {
         "Effective Date": "2025-04-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2329,
+        "Distribution Rate": 5.2196,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.8447,
-        "Total Rate": 15.5248
+        "Total Rate": 15.5115
       },
       {
         "Effective Date": "2025-05-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 10.0217,
+        "Distribution Rate": 9.9961,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.8447,
-        "Total Rate": 20.3136
+        "Total Rate": 20.288
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 9.7093,
         "Transmission Rate": 2.2454,
-        "Total Rate": 21.9564
+        "Total Rate": 21.9308
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 9.7093,
         "Transmission Rate": 2.2454,
-        "Total Rate": 17.1676
+        "Total Rate": 17.1543
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.2454,
-        "Total Rate": 18.4858
+        "Total Rate": 18.4725
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.2877,
+        "Distribution Rate": 5.2759,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.2454,
-        "Total Rate": 18.5606
+        "Total Rate": 18.5488
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RA",
         "Season": "Winter",
-        "Distribution Rate": 5.3351,
+        "Distribution Rate": 5.3231,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.2454,
-        "Total Rate": 18.608
+        "Total Rate": 18.596
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.2454,
-        "Total Rate": 23.4623
+        "Total Rate": 23.4395
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 23.3713
+        "Transmission Rate": 2.5195,
+        "Total Rate": 23.6226
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RA",
         "Season": "Summer",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 23.4495
+        "Transmission Rate": 2.5195,
+        "Total Rate": 23.7007
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RA",
+        "Season": "Summer",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 10.9568,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 23.8198
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Distribution Rate": 5.4059,
+        "Supply Rate": 10.9568,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 18.8822
       }
     ],
     "tou_history": [
@@ -124,259 +142,319 @@
         "Class": "RA",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 5.1528,
         "Transmission Rate": 2.2454,
-        "Total Rate": 17.3999
+        "Total Rate": 17.3743
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 27.9343,
         "Transmission Rate": 2.2454,
-        "Total Rate": 40.1814
+        "Total Rate": 40.1558
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 3.7957,
         "Transmission Rate": 2.2454,
-        "Total Rate": 16.0428
+        "Total Rate": 16.0172
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 5.1528,
         "Transmission Rate": 2.2454,
-        "Total Rate": 12.6111
+        "Total Rate": 12.5978
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 27.9343,
         "Transmission Rate": 2.2454,
-        "Total Rate": 35.3926
+        "Total Rate": 35.3793
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 3.7957,
         "Transmission Rate": 2.2454,
-        "Total Rate": 11.254
+        "Total Rate": 11.2407
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.2454,
-        "Total Rate": 13.3033
+        "Total Rate": 13.29
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.2454,
-        "Total Rate": 39.2148
+        "Total Rate": 39.2015
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 5.2129,
+        "Distribution Rate": 5.1996,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.2454,
-        "Total Rate": 11.7598
+        "Total Rate": 11.7465
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 5.2877,
+        "Distribution Rate": 5.2759,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.2454,
-        "Total Rate": 13.3781
+        "Total Rate": 13.3663
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 5.2877,
+        "Distribution Rate": 5.2759,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.2454,
-        "Total Rate": 39.2896
+        "Total Rate": 39.2778
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 5.2877,
+        "Distribution Rate": 5.2759,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.2454,
-        "Total Rate": 11.8346
+        "Total Rate": 11.8228
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 5.3351,
+        "Distribution Rate": 5.3231,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.2454,
-        "Total Rate": 13.4255
+        "Total Rate": 13.4135
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 5.3351,
+        "Distribution Rate": 5.3231,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.2454,
-        "Total Rate": 39.337
+        "Total Rate": 39.325
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RA",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 5.3351,
+        "Distribution Rate": 5.3231,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.2454,
-        "Total Rate": 11.882
+        "Total Rate": 11.87
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.2454,
-        "Total Rate": 18.2798
+        "Total Rate": 18.257
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.2454,
-        "Total Rate": 44.1913
+        "Total Rate": 44.1685
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.2454,
-        "Total Rate": 16.7363
+        "Total Rate": 16.7135
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 17.8959
+        "Transmission Rate": 2.5195,
+        "Total Rate": 18.1472
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 45.383
+        "Transmission Rate": 2.5195,
+        "Total Rate": 45.6343
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 16.3632
+        "Transmission Rate": 2.5195,
+        "Total Rate": 16.6145
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 17.9741
+        "Transmission Rate": 2.5195,
+        "Total Rate": 18.2253
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 45.4612
+        "Transmission Rate": 2.5195,
+        "Total Rate": 45.7124
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RA",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 2.2454,
-        "Total Rate": 16.4414
+        "Transmission Rate": 2.5195,
+        "Total Rate": 16.6926
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RA",
+        "Season": "Summer",
+        "Period": "Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 5.4814,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 18.3444
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RA",
+        "Season": "Summer",
+        "Period": "Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 32.9685,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 45.8315
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RA",
+        "Season": "Summer",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 3.9487,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 16.8117
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Off-Peak",
+        "Distribution Rate": 5.4059,
+        "Supply Rate": 5.4814,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 13.4068
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Peak",
+        "Distribution Rate": 5.4059,
+        "Supply Rate": 32.9685,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 40.8939
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RA",
+        "Season": "Winter",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 5.4059,
+        "Supply Rate": 3.9487,
+        "Transmission Rate": 2.5195,
+        "Total Rate": 11.8741
       }
     ]
   },
   "RH": {
     "current": {
       "flat": {
-        "Effective Date": "2026-07-01",
+        "Effective Date": "2026-11-01",
         "Class": "RH",
-        "Season": "Summer",
-        "Distribution Rate": 10.2473,
+        "Season": "Winter",
+        "Distribution Rate": 9.5807,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 22.7647
+        "Transmission Rate": 1.7447,
+        "Total Rate": 22.2822
       },
       "tou": {
-        "Season": "Summer",
-        "Off-Peak": 17.2893,
-        "Peak": 44.7764,
-        "Super Off-Peak": 15.7566
+        "Season": "Winter",
+        "Off-Peak": 16.8068,
+        "Peak": 44.2939,
+        "Super Off-Peak": 15.2741
       }
     },
     "history": [
@@ -384,100 +462,118 @@
         "Effective Date": "2025-01-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.2708,
+        "Distribution Rate": 9.2471,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.2097,
-        "Total Rate": 18.9277
+        "Total Rate": 18.904
       },
       {
         "Effective Date": "2025-04-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.2819,
+        "Distribution Rate": 9.2582,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.2097,
-        "Total Rate": 18.9388
+        "Total Rate": 18.9151
       },
       {
         "Effective Date": "2025-05-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 10.0217,
+        "Distribution Rate": 9.9961,
         "Supply Rate": 8.4472,
         "Transmission Rate": 1.2097,
-        "Total Rate": 19.6786
+        "Total Rate": 19.653
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 9.7093,
         "Transmission Rate": 1.5606,
-        "Total Rate": 21.2716
+        "Total Rate": 21.246
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 9.7093,
         "Transmission Rate": 1.5606,
-        "Total Rate": 20.5318
+        "Total Rate": 20.5081
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 11.0275,
         "Transmission Rate": 1.5606,
-        "Total Rate": 21.85
+        "Total Rate": 21.8263
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.3557,
+        "Distribution Rate": 9.3348,
         "Supply Rate": 11.0275,
         "Transmission Rate": 1.5606,
-        "Total Rate": 21.9438
+        "Total Rate": 21.9229
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RH",
         "Season": "Winter",
-        "Distribution Rate": 9.4395,
+        "Distribution Rate": 9.4184,
         "Supply Rate": 11.0275,
         "Transmission Rate": 1.5606,
-        "Total Rate": 22.0276
+        "Total Rate": 22.0065
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 11.0275,
         "Transmission Rate": 1.5606,
-        "Total Rate": 22.7775
+        "Total Rate": 22.7547
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 22.6865
+        "Transmission Rate": 1.7447,
+        "Total Rate": 22.8478
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RH",
         "Season": "Summer",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 22.7647
+        "Transmission Rate": 1.7447,
+        "Total Rate": 22.9259
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RH",
+        "Season": "Summer",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 10.9568,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 23.045
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Distribution Rate": 9.5807,
+        "Supply Rate": 10.9568,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 22.2822
       }
     ],
     "tou_history": [
@@ -486,258 +582,318 @@
         "Class": "RH",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 5.1528,
         "Transmission Rate": 1.5606,
-        "Total Rate": 16.7151
+        "Total Rate": 16.6895
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 27.9343,
         "Transmission Rate": 1.5606,
-        "Total Rate": 39.4966
+        "Total Rate": 39.471
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 3.7957,
         "Transmission Rate": 1.5606,
-        "Total Rate": 15.358
+        "Total Rate": 15.3324
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 5.1528,
         "Transmission Rate": 1.5606,
-        "Total Rate": 15.9753
+        "Total Rate": 15.9516
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 27.9343,
         "Transmission Rate": 1.5606,
-        "Total Rate": 38.7568
+        "Total Rate": 38.7331
       },
       {
         "Effective Date": "2025-11-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 3.7957,
         "Transmission Rate": 1.5606,
-        "Total Rate": 14.6182
+        "Total Rate": 14.5945
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 5.845,
         "Transmission Rate": 1.5606,
-        "Total Rate": 16.6675
+        "Total Rate": 16.6438
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 31.7565,
         "Transmission Rate": 1.5606,
-        "Total Rate": 42.579
+        "Total Rate": 42.5553
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 9.2619,
+        "Distribution Rate": 9.2382,
         "Supply Rate": 4.3015,
         "Transmission Rate": 1.5606,
-        "Total Rate": 15.124
+        "Total Rate": 15.1003
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 9.3557,
+        "Distribution Rate": 9.3348,
         "Supply Rate": 5.845,
         "Transmission Rate": 1.5606,
-        "Total Rate": 16.7613
+        "Total Rate": 16.7404
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 9.3557,
+        "Distribution Rate": 9.3348,
         "Supply Rate": 31.7565,
         "Transmission Rate": 1.5606,
-        "Total Rate": 42.6728
+        "Total Rate": 42.6519
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 9.3557,
+        "Distribution Rate": 9.3348,
         "Supply Rate": 4.3015,
         "Transmission Rate": 1.5606,
-        "Total Rate": 15.2178
+        "Total Rate": 15.1969
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Off-Peak",
-        "Distribution Rate": 9.4395,
+        "Distribution Rate": 9.4184,
         "Supply Rate": 5.845,
         "Transmission Rate": 1.5606,
-        "Total Rate": 16.8451
+        "Total Rate": 16.824
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Peak",
-        "Distribution Rate": 9.4395,
+        "Distribution Rate": 9.4184,
         "Supply Rate": 31.7565,
         "Transmission Rate": 1.5606,
-        "Total Rate": 42.7566
+        "Total Rate": 42.7355
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RH",
         "Season": "Winter",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 9.4395,
+        "Distribution Rate": 9.4184,
         "Supply Rate": 4.3015,
         "Transmission Rate": 1.5606,
-        "Total Rate": 15.3016
+        "Total Rate": 15.2805
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 5.845,
         "Transmission Rate": 1.5606,
-        "Total Rate": 17.595
+        "Total Rate": 17.5722
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 31.7565,
         "Transmission Rate": 1.5606,
-        "Total Rate": 43.5065
+        "Total Rate": 43.4837
       },
       {
         "Effective Date": "2026-05-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 4.3015,
         "Transmission Rate": 1.5606,
-        "Total Rate": 16.0515
+        "Total Rate": 16.0287
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 17.2111
+        "Transmission Rate": 1.7447,
+        "Total Rate": 17.3724
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 44.6982
+        "Transmission Rate": 1.7447,
+        "Total Rate": 44.8595
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 15.6784
+        "Transmission Rate": 1.7447,
+        "Total Rate": 15.8397
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 17.2893
+        "Transmission Rate": 1.7447,
+        "Total Rate": 17.4505
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 44.7764
+        "Transmission Rate": 1.7447,
+        "Total Rate": 44.9376
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RH",
         "Season": "Summer",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 1.5606,
-        "Total Rate": 15.7566
+        "Transmission Rate": 1.7447,
+        "Total Rate": 15.9178
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RH",
+        "Season": "Summer",
+        "Period": "Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 5.4814,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 17.5696
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RH",
+        "Season": "Summer",
+        "Period": "Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 32.9685,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 45.0567
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RH",
+        "Season": "Summer",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 3.9487,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 16.0369
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Off-Peak",
+        "Distribution Rate": 9.5807,
+        "Supply Rate": 5.4814,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 16.8068
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Peak",
+        "Distribution Rate": 9.5807,
+        "Supply Rate": 32.9685,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 44.2939
+      },
+      {
+        "Effective Date": "2026-11-01",
+        "Class": "RH",
+        "Season": "Winter",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 9.5807,
+        "Supply Rate": 3.9487,
+        "Transmission Rate": 1.7447,
+        "Total Rate": 15.2741
       }
     ]
   },
   "RS": {
     "current": {
       "flat": {
-        "Effective Date": "2026-07-01",
+        "Effective Date": "2026-10-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.3435,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 23.9228
+        "Transmission Rate": 3.1841,
+        "Total Rate": 24.4844
       },
       "tou": {
-        "Off-Peak": 18.4474,
-        "Peak": 45.9345,
-        "Super Off-Peak": 16.9147
+        "Off-Peak": 19.009,
+        "Peak": 46.4961,
+        "Super Off-Peak": 17.4763
       }
     },
     "history": [
@@ -745,73 +901,82 @@
         "Effective Date": "2025-01-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.0097,
+        "Distribution Rate": 9.9841,
         "Supply Rate": 8.4472,
         "Transmission Rate": 2.4048,
-        "Total Rate": 20.8617
+        "Total Rate": 20.8361
       },
       {
         "Effective Date": "2025-04-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.0217,
+        "Distribution Rate": 9.9961,
         "Supply Rate": 8.4472,
         "Transmission Rate": 2.4048,
-        "Total Rate": 20.8737
+        "Total Rate": 20.8481
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 9.7093,
         "Transmission Rate": 2.7187,
-        "Total Rate": 22.4297
+        "Total Rate": 22.4041
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.7187,
-        "Total Rate": 23.7479
+        "Total Rate": 23.7223
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.099,
+        "Distribution Rate": 10.0764,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.7187,
-        "Total Rate": 23.8452
+        "Total Rate": 23.8226
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 11.0275,
         "Transmission Rate": 2.7187,
-        "Total Rate": 23.9356
+        "Total Rate": 23.9128
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 23.8446
+        "Transmission Rate": 3.1841,
+        "Total Rate": 24.2872
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RS",
         "Season": "All",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 10.9568,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 23.9228
+        "Transmission Rate": 3.1841,
+        "Total Rate": 24.3653
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RS",
+        "Season": "All",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 10.9568,
+        "Transmission Rate": 3.1841,
+        "Total Rate": 24.4844
       }
     ],
     "tou_history": [
@@ -820,180 +985,210 @@
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 5.1528,
         "Transmission Rate": 2.7187,
-        "Total Rate": 17.8732
+        "Total Rate": 17.8476
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 27.9343,
         "Transmission Rate": 2.7187,
-        "Total Rate": 40.6547
+        "Total Rate": 40.6291
       },
       {
         "Effective Date": "2025-06-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 3.7957,
         "Transmission Rate": 2.7187,
-        "Total Rate": 16.5161
+        "Total Rate": 16.4905
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.7187,
-        "Total Rate": 18.5654
+        "Total Rate": 18.5398
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.7187,
-        "Total Rate": 44.4769
+        "Total Rate": 44.4513
       },
       {
         "Effective Date": "2025-12-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.0017,
+        "Distribution Rate": 9.9761,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.7187,
-        "Total Rate": 17.0219
+        "Total Rate": 16.9963
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.099,
+        "Distribution Rate": 10.0764,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.7187,
-        "Total Rate": 18.6627
+        "Total Rate": 18.6401
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.099,
+        "Distribution Rate": 10.0764,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.7187,
-        "Total Rate": 44.5742
+        "Total Rate": 44.5516
       },
       {
         "Effective Date": "2026-01-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.099,
+        "Distribution Rate": 10.0764,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.7187,
-        "Total Rate": 17.1192
+        "Total Rate": 17.0966
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 5.845,
         "Transmission Rate": 2.7187,
-        "Total Rate": 18.7531
+        "Total Rate": 18.7303
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 31.7565,
         "Transmission Rate": 2.7187,
-        "Total Rate": 44.6646
+        "Total Rate": 44.6418
       },
       {
         "Effective Date": "2026-04-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1894,
+        "Distribution Rate": 10.1666,
         "Supply Rate": 4.3015,
         "Transmission Rate": 2.7187,
-        "Total Rate": 17.2096
+        "Total Rate": 17.1868
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 18.3692
+        "Transmission Rate": 3.1841,
+        "Total Rate": 18.8118
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 45.8563
+        "Transmission Rate": 3.1841,
+        "Total Rate": 46.2989
       },
       {
         "Effective Date": "2026-06-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.1691,
+        "Distribution Rate": 10.1463,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 16.8365
+        "Transmission Rate": 3.1841,
+        "Total Rate": 17.2791
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 5.4814,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 18.4474
+        "Transmission Rate": 3.1841,
+        "Total Rate": 18.8899
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 32.9685,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 45.9345
+        "Transmission Rate": 3.1841,
+        "Total Rate": 46.377
       },
       {
         "Effective Date": "2026-07-01",
         "Class": "RS",
         "Season": "All",
         "Period": "Super Off-Peak",
-        "Distribution Rate": 10.2473,
+        "Distribution Rate": 10.2244,
         "Supply Rate": 3.9487,
-        "Transmission Rate": 2.7187,
-        "Total Rate": 16.9147
+        "Transmission Rate": 3.1841,
+        "Total Rate": 17.3572
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 5.4814,
+        "Transmission Rate": 3.1841,
+        "Total Rate": 19.009
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 32.9685,
+        "Transmission Rate": 3.1841,
+        "Total Rate": 46.4961
+      },
+      {
+        "Effective Date": "2026-10-01",
+        "Class": "RS",
+        "Season": "All",
+        "Period": "Super Off-Peak",
+        "Distribution Rate": 10.3435,
+        "Supply Rate": 3.9487,
+        "Transmission Rate": 3.1841,
+        "Total Rate": 17.4763
       }
     ]
   }

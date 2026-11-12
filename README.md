@@ -18,18 +18,27 @@ DLC does not maintain a public archive of past filings. A collection of historic
 
 ## Usage
 
-1.  **Generate CSV rates from source data:**
-    ```bash
-    python3 csv_rates.py
-    ```
-2.  **Convert CSV to JSON:**
-    ```bash
-    python3 generate_json.py
-    ```
-3.  **Generate the static HTML page:**
-    ```bash
-    python3 html_rates.py
-    ```
+Run `./build.sh` to regenerate everything. It runs these three steps in order:
+
+1.  `python3 csv_rates.py`: builds `output/rates.csv` and `output/rates_tou.csv` from `data/`
+2.  `python3 generate_json.py`: converts them to `output/rates.json`
+3.  `python3 html_rates.py`: generates the site at `docs/index.html`
+
+## Adding a Tariff Supplement
+
+Every rate value in `data/` names the supplement that set it, so each change on the site links back to a DLC filing.
+
+1. Upload the PDF to `tariffs.pyther.net/tariff-25/` as `dlc-tariff-25-supp-N.pdf` (a supplement on its own) or `dlc-tariff-25-N.pdf` (the full tariff as of Supplement N). Then add the supplement to `data/tariffs.csv` with its issued and effective dates, what it changes, and that filename in `Document`.
+2. Add one row for each value it changed, with the supplement number in the `Source` column:
+   - Supply (Rider 8): `supply.csv` and `supply_tou.csv`
+   - Transmission (Appendix A): `transmission.csv`
+   - Riders 5, 10, 15A and 22: `riders.csv` (one row per rider; `Unit` is `¢/kWh` or `%`)
+   - Base distribution rates: `distribution_base.csv`
+3. Run `./build.sh`. The build stops if a `Source` isn't in `tariffs.csv` or its effective date doesn't match the supplement's.
+
+Each supplement's page 2 ("List of Modifications") lists exactly which values it changes.
+
+See [AGENTS.md](./AGENTS.md) for the full process, including where to find old supplements on the PUC site and how to read tariff values correctly.
 
 ## Disclaimer
 

@@ -1,382 +1,694 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Duquesne Light Company Electric Rates</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Unofficial DLC Rate Tracker</title>
+<meta name="description" content="Current and historical Duquesne Light Company residential electricity rates in cents per kWh, including Price to Compare and Time-of-Use rates.">
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.5; }
-h1 { margin-bottom: 10px; }
-h2 { margin-top: 30px; margin-bottom: 15px; }
-.tab { cursor: pointer; padding: 10px 20px; border: 1px solid #ccc; display: inline-block; margin-right: 5px; border-radius: 4px; background-color: #f9f9f9; font-weight: bold; }
-.tab.active { background-color: #e6e6e6; border-bottom: 2px solid #333; }
-.section { display: none; margin-top: 20px; }
-.section.active { display: block; }
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --text: #14181f;
+  --muted: #5a6371;
+  --border: #e1e4ea;
+  --accent: #1d4ed8;
+  --accent-soft: #e5ecfd;
+  --ptc: #d97706;
+  --dist: #2563eb;
+  --peak: #dc2626;
+  --offpeak: #d97706;
+  --superoff: #059669;
+  --up: #b91c1c;
+  --down: #047857;
+  --note-bg: #fff8e6;
+  --note-border: #f2c94c;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1216;
+    --surface: #171b21;
+    --surface-2: #1f242c;
+    --text: #e8ebf0;
+    --muted: #9aa3b0;
+    --border: #2a303a;
+    --accent: #7aa2ff;
+    --accent-soft: #1c2740;
+    --ptc: #f5a524;
+    --dist: #6b9bff;
+    --peak: #f87171;
+    --offpeak: #f5a524;
+    --superoff: #34d399;
+    --up: #f87171;
+    --down: #34d399;
+    --note-bg: #2a2412;
+    --note-border: #8a6d1a;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1216;
+  --surface: #171b21;
+  --surface-2: #1f242c;
+  --text: #e8ebf0;
+  --muted: #9aa3b0;
+  --border: #2a303a;
+  --accent: #7aa2ff;
+  --accent-soft: #1c2740;
+  --ptc: #f5a524;
+  --dist: #6b9bff;
+  --peak: #f87171;
+  --offpeak: #f5a524;
+  --superoff: #34d399;
+  --up: #f87171;
+  --down: #34d399;
+  --note-bg: #2a2412;
+  --note-border: #8a6d1a;
+  --shadow: none;
+}
 
-/* Sub-tab Toggle Styling */
-.rate-type-toggle { margin-bottom: 20px; display: inline-flex; border-radius: 5px; overflow: hidden; border: 1px solid #0066cc; }
-.toggle-btn { padding: 8px 16px; cursor: pointer; border: none; background: white; color: #0066cc; font-size: 0.95em; font-weight: bold; margin: 0; outline: none; }
-.toggle-btn:not(:last-child) { border-right: 1px solid #0066cc; }
-.toggle-btn.active { background: #0066cc; color: white; }
-.rate-container { display: none; }
-.rate-container.active { display: block; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+a { color: var(--accent); }
+.wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
 
-/* Chart Container */
-.chart-container { position: relative; height: 350px; width: 100%; max-width: 800px; margin-bottom: 30px; }
+header h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+header p { margin: 0; color: var(--muted); }
+header .unofficial { margin-top: 8px; font-size: .88rem; }
+header .unofficial strong { color: var(--text); }
 
-table { border-collapse: collapse; width: 100%; max-width: 800px; }
-th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; font-size: 0.95em; }
-th { background-color: #f2f2f2; color: #333; }
-.num { text-align: right; }
-.group-start td { border-top: 2px solid #999; }
-.date-cell { color: #555; }
-a { color: #0066cc; text-decoration: none; }
-a:hover { text-decoration: underline; }
-.info { background-color: #ffffe0; padding: 15px; border-left: 5px solid #ffcc00; margin-bottom: 20px; max-width: 1000px; }
-.info details { background-color: #f9f9f9; padding: 10px; margin-bottom: 10px; }
-.extra-row { display: none; }
-.show-more-btn { margin: 5px 0 15px 0; padding: 5px 10px; cursor: pointer; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; margin: 24px 0 16px; }
+.control-label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 3px; flex-wrap: wrap; }
+.seg button {
+  font: inherit; border: 0; background: transparent; color: var(--text);
+  padding: 7px 14px; border-radius: 7px; cursor: pointer; text-align: left; line-height: 1.25;
+}
+.seg button:hover { background: var(--surface); }
+.seg button[aria-pressed="true"] { background: var(--surface); box-shadow: var(--shadow); outline: 1.5px solid var(--accent); }
+.seg button .code { font-weight: 700; }
+.seg button .sub { display: block; font-size: .78rem; color: var(--muted); }
+.help-link { font-size: .9rem; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.card h2 { font-size: 1.05rem; margin: 0 0 14px; }
+
+/* Summary */
+.summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 24px; }
+@media (max-width: 720px) { .summary { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
+.eyebrow { font-size: .85rem; color: var(--muted); margin: 0 0 2px; }
+.big { font-size: 3rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 1.1rem; font-weight: 500; color: var(--muted); margin-left: 4px; }
+.meta { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+.delta { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.delta.up { color: var(--up); }
+.delta.down { color: var(--down); }
+.delta.flat { color: var(--muted); }
+
+.parts { display: flex; flex-direction: column; gap: 14px; }
+.part-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.part-name { font-weight: 600; }
+.part-name .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 7px; vertical-align: baseline; }
+.part-val { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.part-desc { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+.stackbar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--surface-2); }
+.stackbar span { display: block; height: 100%; }
+
+.upcoming {
+  margin-top: 18px; padding: 12px 14px; border-radius: 10px;
+  background: var(--accent-soft); border: 1px solid var(--border); font-size: .95rem;
+}
+.upcoming strong { font-variant-numeric: tabular-nums; }
+
+.tou-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .tou-grid { grid-template-columns: minmax(0, 1fr); } }
+.tou-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; border-top: 4px solid var(--c); }
+.tou-card .name { font-weight: 600; }
+.tou-card .val { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; margin: 4px 0; }
+.tou-card .val small { font-size: .9rem; font-weight: 500; color: var(--muted); }
+.tou-card .cmp { font-size: .85rem; color: var(--muted); }
+
+.estimator { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.estimator label { font-weight: 600; }
+.estimator input {
+  font: inherit; width: 7em; padding: 6px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+}
+.estimator .result { font-weight: 700; font-variant-numeric: tabular-nums; }
+.estimator .fine { width: 100%; color: var(--muted); font-size: .8rem; }
+
+/* Year-over-year comparison */
+.compare-intro { color: var(--muted); font-size: .9rem; margin: -6px 0 12px; }
+.compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.cmp-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.cmp-card .when { font-weight: 600; }
+.cmp-card .when span { font-weight: 400; color: var(--muted); font-size: .85rem; }
+.cmp-card .money-big { font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; margin: 6px 0 2px; }
+.cmp-card .money-big.up { color: var(--up); }
+.cmp-card .money-big.down { color: var(--down); }
+.cmp-card .money-big small { font-size: .9rem; font-weight: 500; color: var(--muted); }
+.cmp-card .detail { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+
+/* Table */
+.table-scroll { overflow-x: auto; margin: 0 -4px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { font-size: .8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; white-space: normal; vertical-align: bottom; }
+td.num, th.num { text-align: right; }
+tr.is-current td { background: var(--accent-soft); }
+tr.is-scheduled td { color: var(--muted); font-style: italic; }
+.badge { display: inline-block; font-size: .7rem; font-weight: 700; font-style: normal; padding: 1px 7px; border-radius: 99px; margin-left: 6px; vertical-align: 1px; text-transform: uppercase; letter-spacing: .03em; }
+.badge.current { background: var(--accent); color: var(--surface); }
+.badge.scheduled { border: 1px solid var(--muted); color: var(--muted); }
+.more-btn { font: inherit; margin-top: 12px; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.table-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.table-foot a { font-size: .9rem; }
+.table-note { color: var(--muted); font-size: .85rem; margin: 10px 0 0; }
+#history tbody tr[data-date] { cursor: pointer; }
+#history tbody tr[data-date]:hover td { background: var(--surface-2); }
+.math-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 10px; }
+.math-head label { font-weight: 600; }
+.math-head select { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); }
+.math td { white-space: normal; padding: 7px 8px; font-size: .92rem; }
+.math td.num { white-space: nowrap; }
+.math .src { color: var(--muted); font-size: .8rem; }
+.math .op { display: inline-block; width: 1.3em; color: var(--muted); font-weight: 600; }
+.math .grp td { font-weight: 600; padding-top: 16px; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+.math .sub td { font-weight: 600; }
+.math .total td { font-weight: 700; border-top: 2px solid var(--text); }
+.math-note { color: var(--muted); font-size: .85rem; margin: 12px 0 0; }
+.chg-cell { white-space: normal; min-width: 220px; font-size: .85rem; }
+.chg { margin: 1px 0; }
+.chg .detail { color: var(--muted); font-variant-numeric: tabular-nums; }
+.chg .src { white-space: nowrap; }
+.chg .nosrc { color: var(--muted); font-style: italic; white-space: nowrap; }
+.tou-card .hours { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+/* Explainers */
+details { border-top: 1px solid var(--border); padding: 12px 0; }
+details:first-of-type { border-top: 0; padding-top: 0; }
+summary { cursor: pointer; font-weight: 600; }
+details > div { padding-top: 6px; color: var(--text); }
+details li { margin-bottom: 6px; }
+.note { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 12px 14px; border-radius: 8px; font-size: .92rem; margin-bottom: 16px; }
+
+footer { color: var(--muted); font-size: .85rem; margin-top: 28px; }
+footer p { margin: 6px 0; }
 </style>
 </head>
 <body>
-<h1>Duquesne Light Company Electric Rates</h1>
+<div class="wrap">
 
-<div class="info">
-  <p>This page provides a <strong>best-effort estimate</strong> of <a href="https://duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company (DLC)</a> residential electricity rates, shown in <strong>&cent;/kWh</strong>.</p>
+<header>
+  <h1>Unofficial Duquesne Light Rate Tracker</h1>
+  <p>What Duquesne Light (DLC) residential customers pay per kilowatt-hour: current rates, scheduled changes and history.</p>
+  <p class="unofficial"><strong>Independent project, not affiliated with Duquesne Light Company.</strong> Figures are estimates; your DLC bill is the authoritative source.</p>
+</header>
 
-  <p>This is an independent project. The calculations require carefully reviewing the DLC tariff and making informed assumptions. It is intended for informational purposes only and <strong>may not match actual bills</strong> perfectly. DLC’s official billing is always the authoritative source.</p>
+<div class="controls">
+  <div>
+    <span class="control-label" id="class-label">Rate class</span>
+    <div class="seg" id="class-seg" role="group" aria-labelledby="class-label"></div>
+  </div>
+  <div>
+    <span class="control-label" id="plan-label">Supply plan</span>
+    <div class="seg" id="plan-seg" role="group" aria-labelledby="plan-label">
+      <button type="button" data-plan="flat"><span class="code">Standard</span><span class="sub">Same price all day</span></button>
+      <button type="button" data-plan="tou"><span class="code">Time-of-Use</span><span class="sub">Price varies by hour</span></button>
+    </div>
+  </div>
+  <a class="help-link" href="#which-class">Which rate class am I?</a>
+</div>
 
-  <details>
-    <summary><strong>How are these columns calculated?</strong></summary>
-    <p>The rates displayed are broken down as follows:</p>
-    <ul>
-      <li><strong>Total Rate:</strong> The bottom-line price per kWh (PTC + Distribution).</li>
-      <li><strong>Price to Compare (PTC):</strong> The cost of the actual electricity generation and transmission. In the raw tariff, this consists of two separate charges (Supply + Transmission), which are combined here. <br><br><em>A note on third-party suppliers:</em> While Pennsylvania allows consumers to choose an alternative supplier for this portion of the bill, extreme caution is recommended. Many third-party offers use temporary "teaser rates" that later transition into expensive variable rates, or include hidden monthly fees. The PTC shown here is the baseline default rate, which can be used to verify if an alternative offer provides genuine savings.</li>
-      <li><strong>Distribution:</strong> The cost to deliver power to a residence (poles, wires, infrastructure). This is paid to DLC regardless of who supplies the electricity. Because DLC does not publish a single consolidated "distribution rate," this figure is calculated by combining the base rate with the following riders:
-        <ul>
-          <li><strong>Rider No. 5</strong> &ndash; Universal Service Charge</li>
-          <li><strong>Rider No. 10</strong> &ndash; State Tax Adjustment</li>
-          <li><strong>Rider No. 15A</strong> &ndash; Phase IV Energy Efficiency and Conservation Surcharge</li>
-        </ul>
-      </li>
-    </ul>
+<noscript><div class="note">This page needs JavaScript to display rates. The raw data is available as <a href="https://github.com/pyther/dlc-rates/tree/main/output">CSV and JSON on GitHub</a>.</div></noscript>
+
+<section class="card" id="summary" aria-live="polite"></section>
+
+<section class="card" id="compare-card">
+  <h2>Compared with past years</h2>
+  <div id="compare"></div>
+</section>
+
+<section class="card">
+  <h2>All rate changes</h2>
+  <div class="table-scroll"><table id="history"></table></div>
+  <p class="table-note" id="table-note" hidden>Change compares each rate with the previous rate <em>in the same season</em>, so switching between summer and winter rates isn't counted as a price change.</p>
+  <div class="table-foot">
+    <button type="button" class="more-btn" id="more-btn" hidden>Show all</button>
+    <a href="https://github.com/pyther/dlc-rates/tree/main/output">Download CSV / JSON</a>
+  </div>
+</section>
+
+<section class="card" id="math-card">
+  <h2>How the rate is calculated</h2>
+  <div id="math"></div>
+</section>
+
+<section class="card">
+  <h2>About these numbers</h2>
+  <div class="note">These are <strong>best-effort estimates</strong> built by hand from DLC's published tariffs. They may not match your bill exactly. DLC's official billing is always the authoritative source.</div>
+
+  <details id="which-class">
+    <summary>Which rate class am I?</summary>
+    <div>
+      <p>Your rate class is printed on your DLC bill. Most homes are on <strong>RS</strong>.</p>
+      <ul>
+        <li><strong>RS: Residential Service.</strong> Standard residential service.</li>
+        <li><strong>RH: Residential Heating.</strong> Homes heated with electricity. Distribution is cheaper in winter (Nov–Apr).</li>
+        <li><strong>RA: Residential Add-On Heat Pump.</strong> Homes with an add-on heat pump. Distribution is much cheaper in winter (Nov–Apr). Closed to new customers since January 1, 2025.</li>
+      </ul>
+    </div>
   </details>
 
   <details>
-    <summary><strong>A Note on the Financial Risk of Time-of-Use (TOU) Rates</strong></summary>
-    <p>While TOU plans are marketed as a way to save money, the risk-to-reward ratio rarely favors the consumer. The "Peak" rate penalty is so severe compared to the standard flat rate that the margins for actually saving money are incredibly thin.</p>
-    <p>Even for households with Electric Vehicles (EVs) that aggressively shift usage to overnight hours, the savings are often marginal at best. Because the peak rate is so expensive, a single mistake—such as accidentally charging a vehicle, running the AC, or doing laundry during a peak window—can instantly wipe out weeks of careful energy management. Consumers should strictly evaluate their ability to avoid peak-hour usage with zero margin for error before opting into these rates.</p>
+    <summary>How is the rate calculated?</summary>
+    <div>
+      <ul>
+        <li><strong>Total rate:</strong> everything you pay per kWh: Price to Compare + Distribution.</li>
+        <li><strong>Price to Compare (PTC):</strong> the cost of the electricity itself, i.e. DLC's default <em>Supply</em> charge plus <em>Transmission</em>. If you shop for a third-party supplier in Pennsylvania, this is the number to beat.</li>
+        <li><strong>Distribution:</strong> the cost of delivering power to your home (poles, wires, infrastructure). You pay this to DLC no matter who supplies your electricity. DLC doesn't publish a single distribution rate, so this figure is the base rate combined with:
+          <ul>
+            <li>Rider No. 5: Universal Service Charge</li>
+            <li>Rider No. 10: State Tax Adjustment</li>
+            <li>Rider No. 15A: Phase IV Energy Efficiency and Conservation Surcharge</li>
+            <li>Rider No. 22: Distribution System Improvement Charge (DSIC)</li>
+          </ul>
+        </li>
+      </ul>
+      <p>The bill estimate covers only these per-kWh charges. Your bill also includes a fixed monthly customer charge, which isn't shown here.</p>
+    </div>
   </details>
 
   <details>
-    <summary><strong>Resources</strong></summary>
-    <ul>
-      <li><a href="https://duquesnelight.com/service-reliability/service-map/rates/tariff-resources" target="_blank">DLC Tariff Resources</a></li>
-      <li><a href="https://duquesnelight.com/service-reliability/service-map/rates/residential-rates" target="_blank">Residential Rates</a></li>
-      <li><a href="https://duquesnelight.com/energy-money-savings/electric-vehicles/charge-smart-and-save/time-of-use-supply-rate" target="_blank">Time-of-Use Supply Rates</a></li>
-    </ul>
+    <summary>Shopping for a third-party supplier?</summary>
+    <div>
+      <p>Pennsylvania lets you choose who supplies your electricity. Be careful: many offers start with a temporary "teaser" rate that later switches to an expensive variable rate, or they add monthly fees. Compare any offer against the current <strong>Price to Compare</strong> above, and check what happens when the introductory term ends.</p>
+    </div>
   </details>
-</div>
 
-<div id="tabs">
-<div class="tab" data-class="RS">RS (Residential Service)</div>
-<div class="tab" data-class="RH">RH (Residential Heating)</div>
-<div class="tab" data-class="RA">RA (Residential Add-On Heat Pump)</div>
-</div>
-<div class="section" id="section-RS">
-<h2>RS (Residential Service)</h2>
+  <details>
+    <summary>Is Time-of-Use worth it?</summary>
+    <div>
+      <p>In our view, Time-of-Use is a poor bet for most households. As the Time-of-Use cards above show, the Peak rate is roughly double the standard rate, while Off-Peak and Super Off-Peak save only a few cents per kWh. At current rates, using 1 kWh at Peak cancels out the savings from moving about 3 kWh to Super Off-Peak, or about 4 kWh to Off-Peak.</p>
+      <p>That leaves little room for error. Even if you charge an EV overnight, a few peak-hour slips, like running the AC or doing laundry, can erase the savings. Before opting in, consider whether you can avoid peak-hour usage almost entirely.</p>
+    </div>
+  </details>
 
-        <div class="rate-type-toggle">
-            <button class="toggle-btn active" onclick="switchRateType(event, 'RS', 'flat')">Flat Rates</button>
-            <button class="toggle-btn" onclick="switchRateType(event, 'RS', 'tou')">Time-of-Use Rates</button>
-        </div>
-        <div id="RS-flat" class="rate-container active">
-<div class="chart-container"><canvas id="chart-RS"></canvas></div>
-<table>
-<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-07-01</td><td class='num'>23.92</td><td class='num'>13.68</td><td class='num'>10.25</td></tr>
-<tr class=''><td>2026-06-01</td><td class='num'>23.84</td><td class='num'>13.68</td><td class='num'>10.17</td></tr>
-<tr class=''><td>2026-04-01</td><td class='num'>23.94</td><td class='num'>13.75</td><td class='num'>10.19</td></tr>
-<tr class=''><td>2026-01-01</td><td class='num'>23.85</td><td class='num'>13.75</td><td class='num'>10.10</td></tr>
-<tr class=''><td>2025-12-01</td><td class='num'>23.75</td><td class='num'>13.75</td><td class='num'>10.00</td></tr>
-<tr class=''><td>2025-06-01</td><td class='num'>22.43</td><td class='num'>12.43</td><td class='num'>10.00</td></tr>
-<tr class=''><td>2025-04-01</td><td class='num'>20.87</td><td class='num'>10.85</td><td class='num'>10.02</td></tr>
-<tr class=''><td>2025-01-01</td><td class='num'>20.86</td><td class='num'>10.85</td><td class='num'>10.01</td></tr>
-</table>
-</div>
-<div id="RS-tou" class="rate-container">
-<table>
-<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr><td class='date-cell'><strong>2026-07-01</strong></td><td>Off-Peak</td><td class='num'>18.45</td><td class='num'>8.20</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.93</td><td class='num'>35.69</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.91</td><td class='num'>6.67</td><td class='num'>10.25</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-06-01</strong></td><td>Off-Peak</td><td class='num'>18.37</td><td class='num'>8.20</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.86</td><td class='num'>35.69</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.84</td><td class='num'>6.67</td><td class='num'>10.17</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-04-01</strong></td><td>Off-Peak</td><td class='num'>18.75</td><td class='num'>8.56</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.66</td><td class='num'>34.48</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>17.21</td><td class='num'>7.02</td><td class='num'>10.19</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-01-01</strong></td><td>Off-Peak</td><td class='num'>18.66</td><td class='num'>8.56</td><td class='num'>10.10</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.57</td><td class='num'>34.48</td><td class='num'>10.10</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>17.12</td><td class='num'>7.02</td><td class='num'>10.10</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-12-01</strong></td><td>Off-Peak</td><td class='num'>18.57</td><td class='num'>8.56</td><td class='num'>10.00</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.48</td><td class='num'>34.48</td><td class='num'>10.00</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>17.02</td><td class='num'>7.02</td><td class='num'>10.00</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-06-01</strong></td><td>Off-Peak</td><td class='num'>17.87</td><td class='num'>7.87</td><td class='num'>10.00</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>40.65</td><td class='num'>30.65</td><td class='num'>10.00</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.52</td><td class='num'>6.51</td><td class='num'>10.00</td></tr>
-</table>
-</div>
-</div>
-<div class="section" id="section-RH">
-<h2>RH (Residential Heating)</h2>
+  <details>
+    <summary>Sources and tariff archive</summary>
+    <div>
+      <ul>
+        <li><a href="https://duquesnelight.com/service-reliability/service-map/rates/tariff-resources" target="_blank" rel="noopener noreferrer">DLC Tariff Resources</a></li>
+        <li><a href="https://duquesnelight.com/service-reliability/service-map/rates/residential-rates" target="_blank" rel="noopener noreferrer">DLC Residential Rates</a></li>
+        <li><a href="https://github.com/pyther/dlc-rates/blob/main/TARIFFS.md" target="_blank" rel="noopener noreferrer">Historical tariff archive</a> (DLC doesn't keep one publicly)</li>
+      </ul>
+    </div>
+  </details>
+</section>
 
-        <div class="rate-type-toggle">
-            <button class="toggle-btn active" onclick="switchRateType(event, 'RH', 'flat')">Flat Rates</button>
-            <button class="toggle-btn" onclick="switchRateType(event, 'RH', 'tou')">Time-of-Use Rates</button>
-        </div>
-        <div id="RH-flat" class="rate-container active">
-<div class="chart-container"><canvas id="chart-RH"></canvas></div>
-<table>
-<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-07-01 (Summer)</td><td class='num'>22.76</td><td class='num'>12.52</td><td class='num'>10.25</td></tr>
-<tr class=''><td>2026-06-01 (Summer)</td><td class='num'>22.69</td><td class='num'>12.52</td><td class='num'>10.17</td></tr>
-<tr class=''><td>2026-05-01 (Summer)</td><td class='num'>22.78</td><td class='num'>12.59</td><td class='num'>10.19</td></tr>
-<tr class=''><td>2026-04-01 (Winter)</td><td class='num'>22.03</td><td class='num'>12.59</td><td class='num'>9.44</td></tr>
-<tr class=''><td>2026-01-01 (Winter)</td><td class='num'>21.94</td><td class='num'>12.59</td><td class='num'>9.36</td></tr>
-<tr class=''><td>2025-12-01 (Winter)</td><td class='num'>21.85</td><td class='num'>12.59</td><td class='num'>9.26</td></tr>
-<tr class=''><td>2025-11-01 (Winter)</td><td class='num'>20.53</td><td class='num'>11.27</td><td class='num'>9.26</td></tr>
-<tr class=''><td>2025-06-01 (Summer)</td><td class='num'>21.27</td><td class='num'>11.27</td><td class='num'>10.00</td></tr>
-<tr class=''><td>2025-05-01 (Summer)</td><td class='num'>19.68</td><td class='num'>9.66</td><td class='num'>10.02</td></tr>
-<tr class=''><td>2025-04-01 (Winter)</td><td class='num'>18.94</td><td class='num'>9.66</td><td class='num'>9.28</td></tr>
-<tr class=''><td>2025-01-01 (Winter)</td><td class='num'>18.93</td><td class='num'>9.66</td><td class='num'>9.27</td></tr>
-</table>
-</div>
-<div id="RH-tou" class="rate-container">
-<table>
-<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr><td class='date-cell'><strong>2026-07-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.29</td><td class='num'>7.04</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.78</td><td class='num'>34.53</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.76</td><td class='num'>5.51</td><td class='num'>10.25</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.21</td><td class='num'>7.04</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.70</td><td class='num'>34.53</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.68</td><td class='num'>5.51</td><td class='num'>10.17</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-05-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.59</td><td class='num'>7.41</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>43.51</td><td class='num'>33.32</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.05</td><td class='num'>5.86</td><td class='num'>10.19</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-04-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>16.85</td><td class='num'>7.41</td><td class='num'>9.44</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>42.76</td><td class='num'>33.32</td><td class='num'>9.44</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.30</td><td class='num'>5.86</td><td class='num'>9.44</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-01-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>16.76</td><td class='num'>7.41</td><td class='num'>9.36</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>42.67</td><td class='num'>33.32</td><td class='num'>9.36</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.22</td><td class='num'>5.86</td><td class='num'>9.36</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-12-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>16.67</td><td class='num'>7.41</td><td class='num'>9.26</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>42.58</td><td class='num'>33.32</td><td class='num'>9.26</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.12</td><td class='num'>5.86</td><td class='num'>9.26</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-11-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>15.98</td><td class='num'>6.71</td><td class='num'>9.26</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>38.76</td><td class='num'>29.49</td><td class='num'>9.26</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>14.62</td><td class='num'>5.36</td><td class='num'>9.26</td></tr>
-<tr class='group-start extra-row'><td class='date-cell'><strong>2025-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>16.72</td><td class='num'>6.71</td><td class='num'>10.00</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.50</td><td class='num'>29.49</td><td class='num'>10.00</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>15.36</td><td class='num'>5.36</td><td class='num'>10.00</td></tr>
-<tr><td colspan='5'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>
-</table>
-</div>
-</div>
-<div class="section" id="section-RA">
-<h2>RA (Residential Add-On Heat Pump)</h2>
+<footer>
+  <p>This is an independent project and is not affiliated with or endorsed by <a href="https://www.duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company</a>. Data is provided "as is" for informational purposes only. For questions about your bill or service, contact DLC directly.</p>
+  <p>Source on <a href="https://github.com/pyther/dlc-rates" target="_blank" rel="noopener noreferrer">GitHub</a> · Last built 2026-11-11</p>
+</footer>
 
-        <div class="rate-type-toggle">
-            <button class="toggle-btn active" onclick="switchRateType(event, 'RA', 'flat')">Flat Rates</button>
-            <button class="toggle-btn" onclick="switchRateType(event, 'RA', 'tou')">Time-of-Use Rates</button>
-        </div>
-        <div id="RA-flat" class="rate-container active">
-<div class="chart-container"><canvas id="chart-RA"></canvas></div>
-<table>
-<tr><th>Effective Date</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr class=''><td>2026-07-01 (Summer)</td><td class='num'>23.45</td><td class='num'>13.20</td><td class='num'>10.25</td></tr>
-<tr class=''><td>2026-06-01 (Summer)</td><td class='num'>23.37</td><td class='num'>13.20</td><td class='num'>10.17</td></tr>
-<tr class=''><td>2026-05-01 (Summer)</td><td class='num'>23.46</td><td class='num'>13.27</td><td class='num'>10.19</td></tr>
-<tr class=''><td>2026-04-01 (Winter)</td><td class='num'>18.61</td><td class='num'>13.27</td><td class='num'>5.34</td></tr>
-<tr class=''><td>2026-01-01 (Winter)</td><td class='num'>18.56</td><td class='num'>13.27</td><td class='num'>5.29</td></tr>
-<tr class=''><td>2025-12-01 (Winter)</td><td class='num'>18.49</td><td class='num'>13.27</td><td class='num'>5.21</td></tr>
-<tr class=''><td>2025-11-01 (Winter)</td><td class='num'>17.17</td><td class='num'>11.95</td><td class='num'>5.21</td></tr>
-<tr class=''><td>2025-06-01 (Summer)</td><td class='num'>21.96</td><td class='num'>11.95</td><td class='num'>10.00</td></tr>
-<tr class=''><td>2025-05-01 (Summer)</td><td class='num'>20.31</td><td class='num'>10.29</td><td class='num'>10.02</td></tr>
-<tr class=''><td>2025-04-01 (Winter)</td><td class='num'>15.52</td><td class='num'>10.29</td><td class='num'>5.23</td></tr>
-<tr class=''><td>2025-01-01 (Winter)</td><td class='num'>15.52</td><td class='num'>10.29</td><td class='num'>5.23</td></tr>
-</table>
-</div>
-<div id="RA-tou" class="rate-container">
-<table>
-<tr><th>Effective Date</th><th>Period</th><th class='num'>Total (&cent;/kWh)</th><th class='num'>Price to Compare (&cent;/kWh)</th><th class='num'>Distribution (&cent;/kWh)</th></tr>
-<tr><td class='date-cell'><strong>2026-07-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.97</td><td class='num'>7.73</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.46</td><td class='num'>35.21</td><td class='num'>10.25</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.44</td><td class='num'>6.19</td><td class='num'>10.25</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.90</td><td class='num'>7.73</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>45.38</td><td class='num'>35.21</td><td class='num'>10.17</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.36</td><td class='num'>6.19</td><td class='num'>10.17</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-05-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>18.28</td><td class='num'>8.09</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>44.19</td><td class='num'>34.00</td><td class='num'>10.19</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.74</td><td class='num'>6.55</td><td class='num'>10.19</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-04-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>13.43</td><td class='num'>8.09</td><td class='num'>5.34</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.34</td><td class='num'>34.00</td><td class='num'>5.34</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.88</td><td class='num'>6.55</td><td class='num'>5.34</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2026-01-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>13.38</td><td class='num'>8.09</td><td class='num'>5.29</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.29</td><td class='num'>34.00</td><td class='num'>5.29</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.83</td><td class='num'>6.55</td><td class='num'>5.29</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-12-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>13.30</td><td class='num'>8.09</td><td class='num'>5.21</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>39.21</td><td class='num'>34.00</td><td class='num'>5.21</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.76</td><td class='num'>6.55</td><td class='num'>5.21</td></tr>
-<tr class='group-start'><td class='date-cell'><strong>2025-11-01 (Winter)</strong></td><td>Off-Peak</td><td class='num'>12.61</td><td class='num'>7.40</td><td class='num'>5.21</td></tr>
-<tr><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>35.39</td><td class='num'>30.18</td><td class='num'>5.21</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>11.25</td><td class='num'>6.04</td><td class='num'>5.21</td></tr>
-<tr class='group-start extra-row'><td class='date-cell'><strong>2025-06-01 (Summer)</strong></td><td>Off-Peak</td><td class='num'>17.40</td><td class='num'>7.40</td><td class='num'>10.00</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Peak</td><td class='num'>40.18</td><td class='num'>30.18</td><td class='num'>10.00</td></tr>
-<tr class='extra-row'><td class='date-cell'><strong></strong></td><td>Super Off-Peak</td><td class='num'>16.04</td><td class='num'>6.04</td><td class='num'>10.00</td></tr>
-<tr><td colspan='5'><button class='show-more-btn' onclick='showMore(this)'>Show More</button></td></tr>
-</table>
-</div>
 </div>
 
 <script>
-// --- Chart.js Integration ---
-const flatRatesData = {"RA": [{"date": "2026-07-01", "season": "Summer", "distribution_rate": 10.2473, "ptc_rate": 13.2022, "total_rate": 23.4495}, {"date": "2026-06-01", "season": "Summer", "distribution_rate": 10.1691, "ptc_rate": 13.2022, "total_rate": 23.3713}, {"date": "2026-05-01", "season": "Summer", "distribution_rate": 10.1894, "ptc_rate": 13.2729, "total_rate": 23.4623}, {"date": "2026-04-01", "season": "Winter", "distribution_rate": 5.3351, "ptc_rate": 13.2729, "total_rate": 18.608}, {"date": "2026-01-01", "season": "Winter", "distribution_rate": 5.2877, "ptc_rate": 13.2729, "total_rate": 18.5606}, {"date": "2025-12-01", "season": "Winter", "distribution_rate": 5.2129, "ptc_rate": 13.2729, "total_rate": 18.4858}, {"date": "2025-11-01", "season": "Winter", "distribution_rate": 5.2129, "ptc_rate": 11.9547, "total_rate": 17.1676}, {"date": "2025-06-01", "season": "Summer", "distribution_rate": 10.0017, "ptc_rate": 11.9547, "total_rate": 21.9564}, {"date": "2025-05-01", "season": "Summer", "distribution_rate": 10.0217, "ptc_rate": 10.2919, "total_rate": 20.3136}, {"date": "2025-04-01", "season": "Winter", "distribution_rate": 5.2329, "ptc_rate": 10.2919, "total_rate": 15.5248}, {"date": "2025-01-01", "season": "Winter", "distribution_rate": 5.2266, "ptc_rate": 10.2919, "total_rate": 15.5185}], "RH": [{"date": "2026-07-01", "season": "Summer", "distribution_rate": 10.2473, "ptc_rate": 12.5174, "total_rate": 22.7647}, {"date": "2026-06-01", "season": "Summer", "distribution_rate": 10.1691, "ptc_rate": 12.5174, "total_rate": 22.6865}, {"date": "2026-05-01", "season": "Summer", "distribution_rate": 10.1894, "ptc_rate": 12.5881, "total_rate": 22.7775}, {"date": "2026-04-01", "season": "Winter", "distribution_rate": 9.4395, "ptc_rate": 12.5881, "total_rate": 22.0276}, {"date": "2026-01-01", "season": "Winter", "distribution_rate": 9.3557, "ptc_rate": 12.5881, "total_rate": 21.9438}, {"date": "2025-12-01", "season": "Winter", "distribution_rate": 9.2619, "ptc_rate": 12.5881, "total_rate": 21.85}, {"date": "2025-11-01", "season": "Winter", "distribution_rate": 9.2619, "ptc_rate": 11.2699, "total_rate": 20.5318}, {"date": "2025-06-01", "season": "Summer", "distribution_rate": 10.0017, "ptc_rate": 11.2699, "total_rate": 21.2716}, {"date": "2025-05-01", "season": "Summer", "distribution_rate": 10.0217, "ptc_rate": 9.6569, "total_rate": 19.6786}, {"date": "2025-04-01", "season": "Winter", "distribution_rate": 9.2819, "ptc_rate": 9.6569, "total_rate": 18.9388}, {"date": "2025-01-01", "season": "Winter", "distribution_rate": 9.2708, "ptc_rate": 9.6569, "total_rate": 18.9277}], "RS": [{"date": "2026-07-01", "season": "All", "distribution_rate": 10.2473, "ptc_rate": 13.6755, "total_rate": 23.9228}, {"date": "2026-06-01", "season": "All", "distribution_rate": 10.1691, "ptc_rate": 13.6755, "total_rate": 23.8446}, {"date": "2026-04-01", "season": "All", "distribution_rate": 10.1894, "ptc_rate": 13.7462, "total_rate": 23.9356}, {"date": "2026-01-01", "season": "All", "distribution_rate": 10.099, "ptc_rate": 13.7462, "total_rate": 23.8452}, {"date": "2025-12-01", "season": "All", "distribution_rate": 10.0017, "ptc_rate": 13.7462, "total_rate": 23.7479}, {"date": "2025-06-01", "season": "All", "distribution_rate": 10.0017, "ptc_rate": 12.428, "total_rate": 22.4297}, {"date": "2025-04-01", "season": "All", "distribution_rate": 10.0217, "ptc_rate": 10.852, "total_rate": 20.8737}, {"date": "2025-01-01", "season": "All", "distribution_rate": 10.0097, "ptc_rate": 10.852, "total_rate": 20.8617}]};
+const DATA = {"RS":{"name":"Residential Service","short":"Standard","seasonal":false,"flat":[{"date":"2026-12-01","season":"All","total":24.8994,"ptc":14.5559,"supply":11.3718,"trans":3.1841,"dist":10.3435},{"date":"2026-10-01","season":"All","total":24.4844,"ptc":14.1409,"supply":10.9568,"trans":3.1841,"dist":10.3435},{"date":"2026-07-01","season":"All","total":24.3653,"ptc":14.1409,"supply":10.9568,"trans":3.1841,"dist":10.2244},{"date":"2026-06-01","season":"All","total":24.2872,"ptc":14.1409,"supply":10.9568,"trans":3.1841,"dist":10.1463},{"date":"2026-04-01","season":"All","total":23.9128,"ptc":13.7462,"supply":11.0275,"trans":2.7187,"dist":10.1666},{"date":"2026-01-01","season":"All","total":23.8226,"ptc":13.7462,"supply":11.0275,"trans":2.7187,"dist":10.0764},{"date":"2025-12-01","season":"All","total":23.7223,"ptc":13.7462,"supply":11.0275,"trans":2.7187,"dist":9.9761},{"date":"2025-06-01","season":"All","total":22.4041,"ptc":12.428,"supply":9.7093,"trans":2.7187,"dist":9.9761},{"date":"2025-04-01","season":"All","total":20.8481,"ptc":10.852,"supply":8.4472,"trans":2.4048,"dist":9.9961},{"date":"2025-01-01","season":"All","total":20.8361,"ptc":10.852,"supply":8.4472,"trans":2.4048,"dist":9.9841}],"tou":[{"date":"2026-12-01","season":"All","dist":10.3435,"periods":{"Peak":{"total":47.7458,"ptc":37.4023},"Off-Peak":{"total":19.2165,"ptc":8.873},"Super Off-Peak":{"total":17.6251,"ptc":7.2816}}},{"date":"2026-10-01","season":"All","dist":10.3435,"periods":{"Peak":{"total":46.4961,"ptc":36.1526},"Off-Peak":{"total":19.009,"ptc":8.6655},"Super Off-Peak":{"total":17.4763,"ptc":7.1328}}},{"date":"2026-07-01","season":"All","dist":10.2244,"periods":{"Peak":{"total":46.377,"ptc":36.1526},"Off-Peak":{"total":18.8899,"ptc":8.6655},"Super Off-Peak":{"total":17.3572,"ptc":7.1328}}},{"date":"2026-06-01","season":"All","dist":10.1463,"periods":{"Peak":{"total":46.2989,"ptc":36.1526},"Off-Peak":{"total":18.8118,"ptc":8.6655},"Super Off-Peak":{"total":17.2791,"ptc":7.1328}}},{"date":"2026-04-01","season":"All","dist":10.1666,"periods":{"Peak":{"total":44.6418,"ptc":34.4752},"Off-Peak":{"total":18.7303,"ptc":8.5637},"Super Off-Peak":{"total":17.1868,"ptc":7.0202}}},{"date":"2026-01-01","season":"All","dist":10.0764,"periods":{"Peak":{"total":44.5516,"ptc":34.4752},"Off-Peak":{"total":18.6401,"ptc":8.5637},"Super Off-Peak":{"total":17.0966,"ptc":7.0202}}},{"date":"2025-12-01","season":"All","dist":9.9761,"periods":{"Peak":{"total":44.4513,"ptc":34.4752},"Off-Peak":{"total":18.5398,"ptc":8.5637},"Super Off-Peak":{"total":16.9963,"ptc":7.0202}}},{"date":"2025-06-01","season":"All","dist":9.9761,"periods":{"Peak":{"total":40.6291,"ptc":30.653},"Off-Peak":{"total":17.8476,"ptc":7.8715},"Super Off-Peak":{"total":16.4905,"ptc":6.5144}}}],"changes":{"2026-01-01":[{"kind":"common","label":"Universal Service Charge (Rider 5)","detail":"1.549\u00a2 \u2192 1.599\u00a2","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},{"kind":"common","label":"State tax adjustment (Rider 10)","detail":"\u22120.1278% \u2192 \u22120.0964%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"},{"kind":"common","label":"DSIC (Rider 22)","detail":"0.02% \u2192 0.49%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"}],"2026-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"0.49% \u2192 1.39%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"}],"2025-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"\u22120.1% \u2192 0.02%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"}],"2025-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.21\u00a2 \u2192 0.19\u00a2","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},{"kind":"common","label":"Transmission","detail":"2.4048\u00a2 \u2192 2.7187\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"},{"kind":"flat","label":"Supply","detail":"8.4472\u00a2 \u2192 9.7093\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}],"2026-10-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"2.17% \u2192 3.36%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"}],"2026-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.19\u00a2 \u2192 0.17\u00a2","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},{"kind":"common","label":"Transmission","detail":"2.7187\u00a2 \u2192 3.1841\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"},{"kind":"flat","label":"Supply","detail":"11.0275\u00a2 \u2192 10.9568\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 31.7565\u00a2 \u2192 32.9685\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}],"2025-12-01":[{"kind":"flat","label":"Supply","detail":"9.7093\u00a2 \u2192 11.0275\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 27.9343\u00a2 \u2192 31.7565\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}],"2025-01-01":[],"2026-12-01":[{"kind":"flat","label":"Supply","detail":"10.9568\u00a2 \u2192 11.3718\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 32.9685\u00a2 \u2192 34.2182\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}],"2026-07-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"1.39% \u2192 2.17%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"}]},"calc":{"2026-01-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.49,"unit":"%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.7187,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-04-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.7187,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-04-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.4048,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2025-06-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":27.9343,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.1528,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.7957,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}},"supply":{"label":"Supply (Rider 8)","value":9.7093,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.7187,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-10-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":3.1841,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-06-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":3.1841,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2025-12-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.7187,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-01-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":-0.1,"unit":"%","source":"87","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-87.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.4048,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2026-12-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":34.2182,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.6889,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.0975,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.3718,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"trans":{"label":"Transmission (Appendix A)","value":3.1841,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-07-01":{"season":"All","base":{"label":"Base energy charge (Rate RS)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":2.17,"unit":"%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":3.1841,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}}}},"RH":{"name":"Residential Heating","short":"Electric heat","seasonal":true,"flat":[{"date":"2026-12-01","season":"Winter","total":22.6972,"ptc":13.1165,"supply":11.3718,"trans":1.7447,"dist":9.5807},{"date":"2026-11-01","season":"Winter","total":22.2822,"ptc":12.7015,"supply":10.9568,"trans":1.7447,"dist":9.5807},{"date":"2026-10-01","season":"Summer","total":23.045,"ptc":12.7015,"supply":10.9568,"trans":1.7447,"dist":10.3435},{"date":"2026-07-01","season":"Summer","total":22.9259,"ptc":12.7015,"supply":10.9568,"trans":1.7447,"dist":10.2244},{"date":"2026-06-01","season":"Summer","total":22.8478,"ptc":12.7015,"supply":10.9568,"trans":1.7447,"dist":10.1463},{"date":"2026-05-01","season":"Summer","total":22.7547,"ptc":12.5881,"supply":11.0275,"trans":1.5606,"dist":10.1666},{"date":"2026-04-01","season":"Winter","total":22.0065,"ptc":12.5881,"supply":11.0275,"trans":1.5606,"dist":9.4184},{"date":"2026-01-01","season":"Winter","total":21.9229,"ptc":12.5881,"supply":11.0275,"trans":1.5606,"dist":9.3348},{"date":"2025-12-01","season":"Winter","total":21.8263,"ptc":12.5881,"supply":11.0275,"trans":1.5606,"dist":9.2382},{"date":"2025-11-01","season":"Winter","total":20.5081,"ptc":11.2699,"supply":9.7093,"trans":1.5606,"dist":9.2382},{"date":"2025-06-01","season":"Summer","total":21.246,"ptc":11.2699,"supply":9.7093,"trans":1.5606,"dist":9.9761},{"date":"2025-05-01","season":"Summer","total":19.653,"ptc":9.6569,"supply":8.4472,"trans":1.2097,"dist":9.9961},{"date":"2025-04-01","season":"Winter","total":18.9151,"ptc":9.6569,"supply":8.4472,"trans":1.2097,"dist":9.2582},{"date":"2025-01-01","season":"Winter","total":18.904,"ptc":9.6569,"supply":8.4472,"trans":1.2097,"dist":9.2471}],"tou":[{"date":"2026-12-01","season":"Winter","dist":9.5807,"periods":{"Peak":{"total":45.5436,"ptc":35.9629},"Off-Peak":{"total":17.0143,"ptc":7.4336},"Super Off-Peak":{"total":15.4229,"ptc":5.8422}}},{"date":"2026-11-01","season":"Winter","dist":9.5807,"periods":{"Peak":{"total":44.2939,"ptc":34.7132},"Off-Peak":{"total":16.8068,"ptc":7.2261},"Super Off-Peak":{"total":15.2741,"ptc":5.6934}}},{"date":"2026-10-01","season":"Summer","dist":10.3435,"periods":{"Peak":{"total":45.0567,"ptc":34.7132},"Off-Peak":{"total":17.5696,"ptc":7.2261},"Super Off-Peak":{"total":16.0369,"ptc":5.6934}}},{"date":"2026-07-01","season":"Summer","dist":10.2244,"periods":{"Peak":{"total":44.9376,"ptc":34.7132},"Off-Peak":{"total":17.4505,"ptc":7.2261},"Super Off-Peak":{"total":15.9178,"ptc":5.6934}}},{"date":"2026-06-01","season":"Summer","dist":10.1463,"periods":{"Peak":{"total":44.8595,"ptc":34.7132},"Off-Peak":{"total":17.3724,"ptc":7.2261},"Super Off-Peak":{"total":15.8397,"ptc":5.6934}}},{"date":"2026-05-01","season":"Summer","dist":10.1666,"periods":{"Peak":{"total":43.4837,"ptc":33.3171},"Off-Peak":{"total":17.5722,"ptc":7.4056},"Super Off-Peak":{"total":16.0287,"ptc":5.8621}}},{"date":"2026-04-01","season":"Winter","dist":9.4184,"periods":{"Peak":{"total":42.7355,"ptc":33.3171},"Off-Peak":{"total":16.824,"ptc":7.4056},"Super Off-Peak":{"total":15.2805,"ptc":5.8621}}},{"date":"2026-01-01","season":"Winter","dist":9.3348,"periods":{"Peak":{"total":42.6519,"ptc":33.3171},"Off-Peak":{"total":16.7404,"ptc":7.4056},"Super Off-Peak":{"total":15.1969,"ptc":5.8621}}},{"date":"2025-12-01","season":"Winter","dist":9.2382,"periods":{"Peak":{"total":42.5553,"ptc":33.3171},"Off-Peak":{"total":16.6438,"ptc":7.4056},"Super Off-Peak":{"total":15.1003,"ptc":5.8621}}},{"date":"2025-11-01","season":"Winter","dist":9.2382,"periods":{"Peak":{"total":38.7331,"ptc":29.4949},"Off-Peak":{"total":15.9516,"ptc":6.7134},"Super Off-Peak":{"total":14.5945,"ptc":5.3563}}},{"date":"2025-06-01","season":"Summer","dist":9.9761,"periods":{"Peak":{"total":39.471,"ptc":29.4949},"Off-Peak":{"total":16.6895,"ptc":6.7134},"Super Off-Peak":{"total":15.3324,"ptc":5.3563}}}],"changes":{"2025-11-01":[{"kind":"common","label":"Winter rates begin","detail":"","source":null,"url":null}],"2026-01-01":[{"kind":"common","label":"Universal Service Charge (Rider 5)","detail":"1.549\u00a2 \u2192 1.599\u00a2","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},{"kind":"common","label":"State tax adjustment (Rider 10)","detail":"\u22120.1278% \u2192 \u22120.0964%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"},{"kind":"common","label":"DSIC (Rider 22)","detail":"0.02% \u2192 0.49%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"}],"2026-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"0.49% \u2192 1.39%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"}],"2026-11-01":[{"kind":"common","label":"Winter rates begin","detail":"","source":null,"url":null}],"2026-05-01":[{"kind":"common","label":"Summer rates begin","detail":"","source":null,"url":null}],"2025-05-01":[{"kind":"common","label":"Summer rates begin","detail":"","source":null,"url":null}],"2025-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"\u22120.1% \u2192 0.02%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"}],"2025-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.21\u00a2 \u2192 0.19\u00a2","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},{"kind":"common","label":"Transmission","detail":"1.2097\u00a2 \u2192 1.5606\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"},{"kind":"flat","label":"Supply","detail":"8.4472\u00a2 \u2192 9.7093\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}],"2026-10-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"2.17% \u2192 3.36%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"}],"2026-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.19\u00a2 \u2192 0.17\u00a2","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},{"kind":"common","label":"Transmission","detail":"1.5606\u00a2 \u2192 1.7447\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"},{"kind":"flat","label":"Supply","detail":"11.0275\u00a2 \u2192 10.9568\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 31.7565\u00a2 \u2192 32.9685\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}],"2025-12-01":[{"kind":"flat","label":"Supply","detail":"9.7093\u00a2 \u2192 11.0275\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 27.9343\u00a2 \u2192 31.7565\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}],"2025-01-01":[],"2026-12-01":[{"kind":"flat","label":"Supply","detail":"10.9568\u00a2 \u2192 11.3718\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 32.9685\u00a2 \u2192 34.2182\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}],"2026-07-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"1.39% \u2192 2.17%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"}]},"calc":{"2025-11-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":27.9343,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.1528,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.7957,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}},"supply":{"label":"Supply (Rider 8)","value":9.7093,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-01-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.49,"unit":"%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-04-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-11-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.7447,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-05-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-05-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.2097,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2025-04-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.2097,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2025-06-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":27.9343,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.1528,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.7957,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}},"supply":{"label":"Supply (Rider 8)","value":9.7093,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-10-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.7447,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-06-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.7447,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2025-12-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.5606,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-01-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":-0.1,"unit":"%","source":"87","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-87.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.2097,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2026-12-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RH, winter)","value":7.5092,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":34.2182,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.6889,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.0975,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.3718,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.7447,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-07-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RH, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":2.17,"unit":"%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.7447,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}}}},"RA":{"name":"Residential Add-On Heat Pump","short":"Heat pump","seasonal":true,"flat":[{"date":"2026-12-01","season":"Winter","total":19.2972,"ptc":13.8913,"supply":11.3718,"trans":2.5195,"dist":5.4059},{"date":"2026-11-01","season":"Winter","total":18.8822,"ptc":13.4763,"supply":10.9568,"trans":2.5195,"dist":5.4059},{"date":"2026-10-01","season":"Summer","total":23.8198,"ptc":13.4763,"supply":10.9568,"trans":2.5195,"dist":10.3435},{"date":"2026-07-01","season":"Summer","total":23.7007,"ptc":13.4763,"supply":10.9568,"trans":2.5195,"dist":10.2244},{"date":"2026-06-01","season":"Summer","total":23.6226,"ptc":13.4763,"supply":10.9568,"trans":2.5195,"dist":10.1463},{"date":"2026-05-01","season":"Summer","total":23.4395,"ptc":13.2729,"supply":11.0275,"trans":2.2454,"dist":10.1666},{"date":"2026-04-01","season":"Winter","total":18.596,"ptc":13.2729,"supply":11.0275,"trans":2.2454,"dist":5.3231},{"date":"2026-01-01","season":"Winter","total":18.5488,"ptc":13.2729,"supply":11.0275,"trans":2.2454,"dist":5.2759},{"date":"2025-12-01","season":"Winter","total":18.4725,"ptc":13.2729,"supply":11.0275,"trans":2.2454,"dist":5.1996},{"date":"2025-11-01","season":"Winter","total":17.1543,"ptc":11.9547,"supply":9.7093,"trans":2.2454,"dist":5.1996},{"date":"2025-06-01","season":"Summer","total":21.9308,"ptc":11.9547,"supply":9.7093,"trans":2.2454,"dist":9.9761},{"date":"2025-05-01","season":"Summer","total":20.288,"ptc":10.2919,"supply":8.4472,"trans":1.8447,"dist":9.9961},{"date":"2025-04-01","season":"Winter","total":15.5115,"ptc":10.2919,"supply":8.4472,"trans":1.8447,"dist":5.2196},{"date":"2025-01-01","season":"Winter","total":15.5052,"ptc":10.2919,"supply":8.4472,"trans":1.8447,"dist":5.2133}],"tou":[{"date":"2026-12-01","season":"Winter","dist":5.4059,"periods":{"Peak":{"total":42.1436,"ptc":36.7377},"Off-Peak":{"total":13.6143,"ptc":8.2084},"Super Off-Peak":{"total":12.0229,"ptc":6.617}}},{"date":"2026-11-01","season":"Winter","dist":5.4059,"periods":{"Peak":{"total":40.8939,"ptc":35.488},"Off-Peak":{"total":13.4068,"ptc":8.0009},"Super Off-Peak":{"total":11.8741,"ptc":6.4682}}},{"date":"2026-10-01","season":"Summer","dist":10.3435,"periods":{"Peak":{"total":45.8315,"ptc":35.488},"Off-Peak":{"total":18.3444,"ptc":8.0009},"Super Off-Peak":{"total":16.8117,"ptc":6.4682}}},{"date":"2026-07-01","season":"Summer","dist":10.2244,"periods":{"Peak":{"total":45.7124,"ptc":35.488},"Off-Peak":{"total":18.2253,"ptc":8.0009},"Super Off-Peak":{"total":16.6926,"ptc":6.4682}}},{"date":"2026-06-01","season":"Summer","dist":10.1463,"periods":{"Peak":{"total":45.6343,"ptc":35.488},"Off-Peak":{"total":18.1472,"ptc":8.0009},"Super Off-Peak":{"total":16.6145,"ptc":6.4682}}},{"date":"2026-05-01","season":"Summer","dist":10.1666,"periods":{"Peak":{"total":44.1685,"ptc":34.0019},"Off-Peak":{"total":18.257,"ptc":8.0904},"Super Off-Peak":{"total":16.7135,"ptc":6.5469}}},{"date":"2026-04-01","season":"Winter","dist":5.3231,"periods":{"Peak":{"total":39.325,"ptc":34.0019},"Off-Peak":{"total":13.4135,"ptc":8.0904},"Super Off-Peak":{"total":11.87,"ptc":6.5469}}},{"date":"2026-01-01","season":"Winter","dist":5.2759,"periods":{"Peak":{"total":39.2778,"ptc":34.0019},"Off-Peak":{"total":13.3663,"ptc":8.0904},"Super Off-Peak":{"total":11.8228,"ptc":6.5469}}},{"date":"2025-12-01","season":"Winter","dist":5.1996,"periods":{"Peak":{"total":39.2015,"ptc":34.0019},"Off-Peak":{"total":13.29,"ptc":8.0904},"Super Off-Peak":{"total":11.7465,"ptc":6.5469}}},{"date":"2025-11-01","season":"Winter","dist":5.1996,"periods":{"Peak":{"total":35.3793,"ptc":30.1797},"Off-Peak":{"total":12.5978,"ptc":7.3982},"Super Off-Peak":{"total":11.2407,"ptc":6.0411}}},{"date":"2025-06-01","season":"Summer","dist":9.9761,"periods":{"Peak":{"total":40.1558,"ptc":30.1797},"Off-Peak":{"total":17.3743,"ptc":7.3982},"Super Off-Peak":{"total":16.0172,"ptc":6.0411}}}],"changes":{"2025-11-01":[{"kind":"common","label":"Winter rates begin","detail":"","source":null,"url":null}],"2026-01-01":[{"kind":"common","label":"Universal Service Charge (Rider 5)","detail":"1.549\u00a2 \u2192 1.599\u00a2","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},{"kind":"common","label":"State tax adjustment (Rider 10)","detail":"\u22120.1278% \u2192 \u22120.0964%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"},{"kind":"common","label":"DSIC (Rider 22)","detail":"0.02% \u2192 0.49%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"}],"2026-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"0.49% \u2192 1.39%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"}],"2026-11-01":[{"kind":"common","label":"Winter rates begin","detail":"","source":null,"url":null}],"2026-05-01":[{"kind":"common","label":"Summer rates begin","detail":"","source":null,"url":null}],"2025-05-01":[{"kind":"common","label":"Summer rates begin","detail":"","source":null,"url":null}],"2025-04-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"\u22120.1% \u2192 0.02%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"}],"2025-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.21\u00a2 \u2192 0.19\u00a2","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},{"kind":"common","label":"Transmission","detail":"1.8447\u00a2 \u2192 2.2454\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"},{"kind":"flat","label":"Supply","detail":"8.4472\u00a2 \u2192 9.7093\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}],"2026-10-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"2.17% \u2192 3.36%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"}],"2026-06-01":[{"kind":"common","label":"Energy efficiency surcharge (Rider 15A)","detail":"0.19\u00a2 \u2192 0.17\u00a2","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},{"kind":"common","label":"Transmission","detail":"2.2454\u00a2 \u2192 2.5195\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"},{"kind":"flat","label":"Supply","detail":"11.0275\u00a2 \u2192 10.9568\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 31.7565\u00a2 \u2192 32.9685\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}],"2025-12-01":[{"kind":"flat","label":"Supply","detail":"9.7093\u00a2 \u2192 11.0275\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 27.9343\u00a2 \u2192 31.7565\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}],"2025-01-01":[],"2026-12-01":[{"kind":"flat","label":"Supply","detail":"10.9568\u00a2 \u2192 11.3718\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},{"kind":"tou","label":"Time-of-Use supply","detail":"Peak 32.9685\u00a2 \u2192 34.2182\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}],"2026-07-01":[{"kind":"common","label":"DSIC (Rider 22)","detail":"1.39% \u2192 2.17%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"}]},"calc":{"2025-11-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":27.9343,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.1528,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.7957,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}},"supply":{"label":"Supply (Rider 8)","value":9.7093,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-01-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.49,"unit":"%","source":"99","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-99.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-04-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-11-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.5195,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-05-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-05-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.8447,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2025-04-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.8447,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2025-06-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":27.9343,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.1528,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.7957,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"}},"supply":{"label":"Supply (Rider 8)","value":9.7093,"unit":"\u00a2","source":"92","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-92.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2026-10-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.5195,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-06-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":1.39,"unit":"%","source":"101","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-101.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.5195,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2025-12-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.19,"unit":"\u00a2/kWh","source":"93","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-93.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":0.02,"unit":"%","source":"90","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-90.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":31.7565,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.845,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.3015,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.0275,"unit":"\u00a2","source":"96","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-96.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.2454,"unit":"\u00a2","source":"94","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-94.pdf"}},"2025-01-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.549,"unit":"\u00a2/kWh","source":"84","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-84.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.21,"unit":"\u00a2/kWh","source":"76","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-76.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":-0.1,"unit":"%","source":"87","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-87.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.1278,"unit":"%","source":"86","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-86.pdf"}},"tou":{},"supply":{"label":"Supply (Rider 8)","value":8.4472,"unit":"\u00a2","source":"83","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-83.pdf"},"trans":{"label":"Transmission (Appendix A)","value":1.8447,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"}},"2026-12-01":{"season":"Winter","base":{"label":"Base energy charge (Rate RA, winter)","value":3.4662,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":3.36,"unit":"%","source":"110","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-110.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":34.2182,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.6889,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":4.0975,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"}},"supply":{"label":"Supply (Rider 8)","value":11.3718,"unit":"\u00a2","source":"111","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-111.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.5195,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}},"2026-07-01":{"season":"Summer","base":{"label":"Base energy charge (Rate RA, summer)","value":8.2479,"unit":"\u00a2","source":"85","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-85.pdf"},"riders":{"Rider 5":{"label":"Universal Service Charge (Rider 5)","value":1.599,"unit":"\u00a2/kWh","source":"97","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-97.pdf"},"Rider 15A":{"label":"Energy efficiency surcharge (Rider 15A)","value":0.17,"unit":"\u00a2/kWh","source":"104","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-104.pdf"},"Rider 22":{"label":"DSIC (Rider 22)","value":2.17,"unit":"%","source":"107","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-107.pdf"},"Rider 10":{"label":"State tax adjustment (Rider 10)","value":-0.0964,"unit":"%","source":"98","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-98.pdf"}},"tou":{"Peak":{"label":"Peak supply (Rider 8)","value":32.9685,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Off-Peak":{"label":"Off-Peak supply (Rider 8)","value":5.4814,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"Super Off-Peak":{"label":"Super Off-Peak supply (Rider 8)","value":3.9487,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"}},"supply":{"label":"Supply (Rider 8)","value":10.9568,"unit":"\u00a2","source":"102","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-102.pdf"},"trans":{"label":"Transmission (Appendix A)","value":2.5195,"unit":"\u00a2","source":"105","url":"https://tariffs.pyther.net/tariff-25/dlc-tariff-25-supp-105.pdf"}}}}};
+const CLASSES = ["RS", "RH", "RA"];
+const PERIODS = ["Peak", "Off-Peak", "Super Off-Peak"];
+const PERIOD_VAR = { "Peak": "--peak", "Off-Peak": "--offpeak", "Super Off-Peak": "--superoff" };
+// TOU period hours from Rider No. 8 – Default Service Supply (tariff page 98A).
+const PERIOD_HOURS = { "Peak": "3–9 PM weekdays", "Off-Peak": "All other hours", "Super Off-Peak": "11 PM–6 AM every day" };
+const INITIAL_ROWS = 12;
+// DLC's own "typical residential customer" benchmark in its rate filings.
+// (The Pennsylvania-wide average, per EIA, is closer to 800.)
+const DEFAULT_KWH = "600";
+const MAX_YEARS_BACK = 5;
+const TODAY = (() => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
 
-function initCharts() {
-    const classes = ['RS', 'RH', 'RA'];
+const state = { cls: "RS", plan: "flat", showAll: false, kwh: loadKwh(), mathDate: null };
 
-    classes.forEach(cls => {
-        const ctx = document.getElementById('chart-' + cls);
-        if (!ctx) return;
+// ---------- helpers ----------
+const fmt = n => n.toFixed(2);
+const kwhNum = () => Math.max(0, parseFloat(state.kwh) || 0);
+// Cents-per-kWh → dollars per month at the visitor's usage.
+function money(cents, signed) {
+  const v = cents * kwhNum() / 100;
+  const s = "$" + Math.abs(v).toFixed(2);
+  if (!signed) return s;
+  return Math.abs(v) < 0.005 ? "$0.00" : (v > 0 ? "+" : "−") + s;
+}
+// Dollar figures are rendered as <span data-cents="…" data-signed> so they can
+// update live as the usage input changes, without re-rendering the page.
+const moneySpan = (cents, signed) => `<span data-cents="${cents}"${signed ? " data-signed" : ""}>${money(cents, signed)}</span>`;
+const kwhSpan = () => `<span class="kwh-label">${kwhNum().toLocaleString("en-US")}</span>`;
+function refreshMoney() {
+  document.querySelectorAll("[data-cents]").forEach(el => { el.textContent = money(parseFloat(el.dataset.cents), "signed" in el.dataset); });
+  document.querySelectorAll(".kwh-label").forEach(el => { el.textContent = kwhNum().toLocaleString("en-US"); });
+}
+// Rate in effect on a given ISO date (rows are newest first).
+const asOf = (rows, iso) => rows.find(r => r.date <= iso) || null;
+// The previous rate in the same season (rows are newest first). For seasonal
+// classes this keeps the May/Nov season switch from looking like a price change.
+const prevSameSeason = (rows, r) => rows.slice(rows.indexOf(r) + 1).find(x => x.season === r.season) || null;
+const yearsAgo = n => (parseInt(TODAY.slice(0, 4), 10) - n) + TODAY.slice(4);
+const fmtDate = (iso, opts) => new Date(iso + "T00:00:00").toLocaleDateString("en-US", opts || { month: "short", day: "numeric", year: "numeric" });
+const seasonNote = s => s === "Summer" ? "Summer rate (May–Oct)" : s === "Winter" ? "Winter rate (Nov–Apr)" : "";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-        const data = flatRatesData[cls] || [];
-
-        // Data is currently newest to oldest. Reverse it for chronological charting.
-        const chartData = [...data].reverse();
-
-        // For RH and RA, append the season to the date for the chart tooltip
-        const labels = chartData.map(d => (cls === 'RH' || cls === 'RA') ? d.date + ' (' + d.season + ')' : d.date);
-        const totalRates = chartData.map(d => d.total_rate);
-        const ptcRates = chartData.map(d => d.ptc_rate);
-        const distRates = chartData.map(d => d.distribution_rate);
-
-        new Chart(ctx, {
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        type: 'line',
-                        label: 'Total Rate Trend',
-                        data: totalRates,
-                        borderColor: '#1e293b', /* Crisp Dark Slate */
-                        backgroundColor: '#1e293b',
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        fill: false, /* No background fill */
-                        tension: 0.2
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Price to Compare (PTC)',
-                        data: ptcRates,
-                        backgroundColor: 'rgba(245, 158, 11, 0.8)', /* Warm Amber */
-                        borderColor: '#d97706',
-                        borderWidth: 1,
-                        stack: 'Stack 0',
-                        barPercentage: 0.5 /* Slims down the bar width */
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Distribution',
-                        data: distRates,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)', /* Utility Blue */
-                        borderColor: '#2563eb',
-                        borderWidth: 1,
-                        stack: 'Stack 0',
-                        barPercentage: 0.5 /* Slims down the bar width */
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    legend: { position: 'bottom' }
-                },
-                scales: {
-                    x: {
-                        stacked: true, /* Enable bar stacking horizontally */
-                        ticks: {
-                            maxTicksLimit: 12
-                        }
-                    },
-                    y: {
-                        stacked: true, /* Enable bar stacking vertically */
-                        beginAtZero: true,
-                        title: { display: true, text: 'Cents per kWh (¢)' }
-                    }
-                }
-            }
-        });
-    });
+function deltaHtml(now, prev, suffix) {
+  if (prev == null) return "";
+  const d = now - prev;
+  if (Math.abs(d) < 0.005) return `<span class="delta flat">no change${suffix || ""}</span>`;
+  const pct = prev ? (d / prev) * 100 : 0;
+  const cls = d > 0 ? "up" : "down";
+  const arrow = d > 0 ? "▲" : "▼";
+  return `<span class="delta ${cls}">${arrow} ${fmt(Math.abs(d))}¢ (${d > 0 ? "+" : "−"}${Math.abs(pct).toFixed(1)}%)${suffix || ""}</span>`;
 }
 
-// Initialize charts after script loads
-window.addEventListener('DOMContentLoaded', initCharts);
+// Split newest-first rows into scheduled (future), current, and past.
+function split(rows) {
+  const scheduled = rows.filter(r => r.date > TODAY);
+  const rest = rows.filter(r => r.date <= TODAY);
+  return { scheduled, current: rest[0] || rows[rows.length - 1], previous: rest[1] || null };
+}
 
-// --- UI Interaction Logic ---
-// Main Class Tabs
-const tabs = document.querySelectorAll('.tab');
-const sections = document.querySelectorAll('.section');
+// ---------- controls ----------
+function renderControls() {
+  const seg = document.getElementById("class-seg");
+  seg.innerHTML = CLASSES.map(c =>
+    `<button type="button" data-cls="${c}" aria-pressed="${c === state.cls}"><span class="code">${c}</span><span class="sub">${esc(DATA[c].short)}</span></button>`
+  ).join("");
+  document.querySelectorAll("#plan-seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.plan === state.plan));
+}
 
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById('section-' + tab.dataset.class).classList.add('active');
-    });
+document.getElementById("class-seg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.cls = b.dataset.cls; state.showAll = false; state.mathDate = null; update();
 });
-tabs[0].click();
+document.getElementById("plan-seg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.plan = b.dataset.plan; state.showAll = false; state.mathDate = null; update();
+});
+document.querySelector(".help-link").addEventListener("click", e => {
+  e.preventDefault();
+  const det = document.getElementById("which-class");
+  det.open = true; det.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("history").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-date]");
+  if (!tr || e.target.closest("a")) return;
+  state.mathDate = tr.dataset.date; renderMath();
+  document.getElementById("math-card").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("more-btn").addEventListener("click", () => { state.showAll = true; renderTable(); });
 
-// Sub-Tabs for Flat vs TOU
-function switchRateType(event, cls, type) {
-    const section = document.getElementById('section-' + cls);
+// ---------- summary ----------
+function renderSummary() {
+  const d = DATA[state.cls];
+  const el = document.getElementById("summary");
 
-    // Update button states
-    section.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+  if (state.plan === "flat") {
+    const { scheduled, current: cur } = split(d.flat);
+    const prev = prevSameSeason(d.flat, cur);
+    const sumParts = cur.ptc + cur.dist;
+    const next = scheduled[scheduled.length - 1]; // soonest scheduled change
+    const nextBase = next ? (prevSameSeason(d.flat, next) || cur) : null;
+    const season = d.seasonal ? ` · ${seasonNote(cur.season)}` : "";
 
-    // Update container visibility
-    section.querySelectorAll('.rate-container').forEach(c => c.classList.remove('active'));
-    document.getElementById(cls + '-' + type).classList.add('active');
+    el.innerHTML = `
+      <div class="summary">
+        <div>
+          <p class="eyebrow">${esc(d.name)} (${state.cls}) · Standard rate</p>
+          <div class="big">${fmt(cur.total)}<small>¢/kWh</small></div>
+          <div class="meta">In effect since ${fmtDate(cur.date)}${season}</div>
+          ${prev ? `<div class="meta">${deltaHtml(cur.total, prev.total)} vs. ${d.seasonal ? `last ${cur.season.toLowerCase()} rate (${fmtDate(prev.date)})` : fmtDate(prev.date)}</div>` : ""}        </div>
+        <div class="parts">
+          <div class="stackbar" aria-hidden="true">
+            <span style="width:${(cur.ptc / sumParts) * 100}%;background:var(--ptc)"></span>
+            <span style="width:${(cur.dist / sumParts) * 100}%;background:var(--dist)"></span>
+          </div>
+          <div>
+            <div class="part-head"><span class="part-name"><span class="swatch" style="background:var(--ptc)"></span>Price to Compare</span><span class="part-val">${fmt(cur.ptc)}¢</span></div>
+            <div class="part-desc">The electricity itself (supply ${fmt(cur.supply)}¢ + transmission ${fmt(cur.trans)}¢). A third-party supplier has to beat this.</div>
+          </div>
+          <div>
+            <div class="part-head"><span class="part-name"><span class="swatch" style="background:var(--dist)"></span>Distribution</span><span class="part-val">${fmt(cur.dist)}¢</span></div>
+            <div class="part-desc">Delivery to your home. You pay this to DLC whoever your supplier is.</div>
+          </div>
+        </div>
+      </div>
+      <div class="estimator">
+        <label for="kwh">Monthly usage</label>
+        <input id="kwh" type="number" inputmode="numeric" min="0" step="50" value="${esc(state.kwh)}"> kWh
+        <span>≈ <span class="result">${moneySpan(cur.total)}</span> per month</span>
+        <span class="fine">Per-kWh charges only, at today's rate. Excludes the fixed monthly customer charge. DLC's typical residential customer uses ${DEFAULT_KWH} kWh/month. Your bill shows yours.</span>
+      </div>
+      ${next ? `<div class="upcoming">📅 <strong>Scheduled change on ${fmtDate(next.date)}:</strong> total becomes <strong>${fmt(next.total)}¢/kWh</strong> ${deltaHtml(next.total, nextBase.total)}, about <strong>${moneySpan(next.total - nextBase.total, true)}/month</strong> at ${kwhSpan()} kWh${nextBase !== cur ? ` compared with the last ${next.season.toLowerCase()} rate` : ""}.</div>` : ""}`;
+
+    document.getElementById("kwh").addEventListener("input", e => {
+      state.kwh = e.target.value; saveKwh(state.kwh); refreshMoney();
+    });
+  } else {
+    if (!d.tou.length) { el.innerHTML = `<p>No Time-of-Use rates are available for ${state.cls}.</p>`; return; }
+    const { scheduled, current: cur } = split(d.tou);
+    const flatCur = split(d.flat).current;
+    const next = scheduled[scheduled.length - 1];
+    const season = d.seasonal ? ` · ${seasonNote(cur.season)}` : "";
+
+    const cards = PERIODS.map(p => {
+      const r = cur.periods[p]; if (!r) return "";
+      const vs = r.total - flatCur.total;
+      return `<div class="tou-card" style="--c:var(${PERIOD_VAR[p]})">
+        <div class="name">${p}</div>
+        <div class="hours">${PERIOD_HOURS[p]}</div>
+        <div class="val">${fmt(r.total)}<small> ¢/kWh</small></div>
+        <div class="cmp">${vs >= 0 ? "+" : "−"}${fmt(Math.abs(vs))}¢ vs. standard rate</div>      </div>`;
+    }).join("");
+
+    el.innerHTML = `
+      <p class="eyebrow">${esc(d.name)} (${state.cls}) · Time-of-Use rate</p>
+      <div class="meta" style="margin:0 0 14px">In effect since ${fmtDate(cur.date)}${season} · Standard rate for comparison: ${fmt(flatCur.total)}¢/kWh</div>
+      <div class="tou-grid">${cards}</div>
+      ${next ? `<div class="upcoming">📅 <strong>Scheduled change on ${fmtDate(next.date)}:</strong> ${PERIODS.filter(p => next.periods[p]).map(p => `${p} <strong>${fmt(next.periods[p].total)}¢</strong>`).join(" · ")}</div>` : ""}
+      <div class="meta" style="margin-top:14px">Peak excludes New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving and Christmas. Hours are from Rider No. 8 of DLC's tariff.</div>`;
+  }
 }
 
-function showMore(btn){
-    const table = btn.closest('table');
-    table.querySelectorAll('.extra-row').forEach(r => r.style.display = 'table-row');
-    btn.style.display = 'none';
+// ---------- table ----------
+function rowState(r, current) {
+  if (r.date > TODAY) return { cls: "is-scheduled", badge: '<span class="badge scheduled">Scheduled</span>' };
+  if (r === current) return { cls: "is-current", badge: '<span class="badge current">Current</span>' };
+  return { cls: "", badge: "" };
 }
+
+// "What changed" cell: each component that changed and the supplement behind it.
+function changesHtml(r, kind) {
+  const list = (DATA[state.cls].changes[r.date] || []).filter(c => c.kind === "common" || c.kind === kind);
+  if (!list.length) return "—";
+  return list.map(c => {
+    const src = !c.source ? (c.detail ? ' · <span class="nosrc">source not recorded</span>' : "")
+      : c.url ? ` · <a class="src" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Supp. ${esc(c.source)}</a>`
+      : ` · <span class="src">Supp. ${esc(c.source)}</span>`;
+    return `<div class="chg">${esc(c.label)}${c.detail ? ` <span class="detail">${esc(c.detail)}</span>` : ""}${src}</div>`;
+  }).join("");
+}
+
+function renderTable() {
+  const d = DATA[state.cls];
+  const table = document.getElementById("history");
+  const seasonTh = d.seasonal ? "<th>Season</th>" : "";
+  let head, rows;
+
+  if (state.plan === "flat") {
+    const { current } = split(d.flat);
+    head = `<tr><th>Effective</th>${seasonTh}<th class="num">Total ¢/kWh</th><th class="num">Change</th><th class="num">Price to Compare</th><th class="num">Distribution</th><th>What changed</th></tr>`;
+    rows = d.flat.map((r, i) => {
+      const prev = prevSameSeason(d.flat, r);
+      const st = rowState(r, current);
+      const ch = prev ? r.total - prev.total : null;
+      const chHtml = ch == null ? "—" : Math.abs(ch) < 0.005 ? '<span class="delta flat">0.00</span>' :
+        `<span class="delta ${ch > 0 ? "up" : "down"}">${ch > 0 ? "+" : "−"}${fmt(Math.abs(ch))}</span>`;
+      return `<tr class="${st.cls}" data-date="${r.date}"><td>${fmtDate(r.date)}${st.badge}</td>${d.seasonal ? `<td>${r.season}</td>` : ""}<td class="num"><strong>${fmt(r.total)}</strong></td><td class="num">${chHtml}</td><td class="num">${fmt(r.ptc)}</td><td class="num">${fmt(r.dist)}</td><td class="chg-cell">${changesHtml(r, "flat")}</td></tr>`;
+    });
+  } else {
+    const { current } = split(d.tou);
+    head = `<tr><th>Effective</th>${seasonTh}${PERIODS.map(p => `<th class="num">${p}</th>`).join("")}<th class="num">Distribution</th><th>What changed</th></tr>`;
+    rows = d.tou.map(r => {
+      const st = rowState(r, current);
+      return `<tr class="${st.cls}" data-date="${r.date}"><td>${fmtDate(r.date)}${st.badge}</td>${d.seasonal ? `<td>${r.season}</td>` : ""}${PERIODS.map(p => `<td class="num">${r.periods[p] ? fmt(r.periods[p].total) : "—"}</td>`).join("")}<td class="num">${fmt(r.dist)}</td><td class="chg-cell">${changesHtml(r, "tou")}</td></tr>`;
+    });
+  }
+
+  const visible = state.showAll ? rows : rows.slice(0, INITIAL_ROWS);
+  table.innerHTML = `<thead>${head}</thead><tbody>${visible.join("")}</tbody>`;
+  const btn = document.getElementById("more-btn");
+  btn.hidden = state.showAll || rows.length <= INITIAL_ROWS;
+  document.getElementById("table-note").hidden = !(d.seasonal && state.plan === "flat");
+  btn.textContent = `Show all ${rows.length} changes`;
+}
+
+// ---------- year-over-year comparison ----------
+const signedC = v => (Math.abs(v) < 0.005 ? "±" : v > 0 ? "+" : "−") + fmt(Math.abs(v)) + "¢";
+const agoLabel = n => n === 1 ? "1 year ago" : n + " years ago";
+
+function renderCompare() {
+  const d = DATA[state.cls];
+  const card = document.getElementById("compare-card");
+  const el = document.getElementById("compare");
+  // Every whole year back the data covers (asOf() returns null past the oldest row).
+  const horizons = Array.from({ length: MAX_YEARS_BACK }, (_, i) => i + 1);
+  let cards = [], intro = "";
+
+  if (state.plan === "flat") {
+    const cur = split(d.flat).current;
+    cards = horizons.map(n => {
+      const iso = yearsAgo(n), then = asOf(d.flat, iso);
+      if (!then) return "";
+      const diff = cur.total - then.total;
+      const dir = diff > 0.005 ? "up" : diff < -0.005 ? "down" : "";
+      return `<div class="cmp-card">
+        <div class="when">${agoLabel(n)} <span>(${fmtDate(iso)})</span></div>
+        <div class="money-big ${dir}">${moneySpan(diff, true)}<small> /month</small></div>
+        <div class="detail">${fmt(then.total)}¢ → ${fmt(cur.total)}¢/kWh ${deltaHtml(cur.total, then.total)}</div>
+        <div class="detail">Price to Compare ${signedC(cur.ptc - then.ptc)} · Distribution ${signedC(cur.dist - then.dist)}</div>
+      </div>`;
+    }).filter(Boolean);
+    intro = `How much more or less today's rate costs for ${kwhSpan()} kWh a month.` +
+      (d.seasonal ? " Comparisons use the same calendar date, so the season matches." : "");
+  } else if (d.tou.length) {
+    const cur = split(d.tou).current;
+    cards = horizons.map(n => {
+      const iso = yearsAgo(n), then = asOf(d.tou, iso);
+      if (!then) return "";
+      const lines = PERIODS.filter(p => cur.periods[p] && then.periods[p]).map(p => {
+        const now = cur.periods[p].total, was = then.periods[p].total;
+        const pct = Math.round((now - was) / was * 1000) / 10; // 1 decimal, so "−0.0%" can't happen
+        const dir = pct > 0 ? "up" : pct < 0 ? "down" : "flat";
+        const pctText = pct === 0 ? "no change" : `${pct > 0 ? "+" : "−"}${Math.abs(pct).toFixed(1)}%`;
+        return `<div class="part-head" style="margin-top:6px"><span class="part-name"><span class="swatch" style="background:var(${PERIOD_VAR[p]})"></span>${p}</span><span class="delta ${dir}">${pctText}</span></div>
+          <div class="detail">${fmt(was)}¢ → ${fmt(now)}¢/kWh (${signedC(now - was)})</div>`;
+      }).join("");
+      return `<div class="cmp-card"><div class="when">${agoLabel(n)} <span>(${fmtDate(iso)})</span></div>${lines}</div>`;
+    }).filter(Boolean);
+    intro = "Change in each period's rate compared with the same date in past years.";
+  }
+
+  card.hidden = cards.length === 0;
+  el.innerHTML = `<p class="compare-intro">${intro}</p><div class="compare-grid">${cards.join("")}</div>`;
+}
+
+// ---------- calculation ----------
+// Rebuilds the rate from its tariff inputs, in the same order as csv_rates.py.
+const round4 = v => Math.round(v * 1e4) / 1e4;
+const c4 = v => v.toFixed(4) + "¢";
+const signed4 = v => (v < 0 ? "−" : "+") + Math.abs(v).toFixed(4) + "¢";
+const pctFactor = v => `× (1 ${v < 0 ? "−" : "+"} ${Math.abs(v)}%)`;
+
+function srcHtml(it) {
+  const supp = !it.source ? '<span class="nosrc">source not recorded</span>'
+    : it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noopener noreferrer">Supp. ${esc(it.source)}</a>`
+    : `Supp. ${esc(it.source)}`;
+  return supp;
+}
+
+function mathRow(op, label, it, value, cls) {
+  return `<tr class="${cls || ""}"><td><span class="op">${op}</span>${label}</td><td class="src">${it ? srcHtml(it) : ""}</td><td class="num">${value}</td></tr>`;
+}
+
+function renderMath() {
+  const d = DATA[state.cls];
+  const rows = state.plan === "flat" ? d.flat : d.tou;
+  const el = document.getElementById("math");
+  if (!rows.length) { el.innerHTML = ""; return; }
+  if (!rows.some(r => r.date === state.mathDate)) state.mathDate = split(rows).current.date;
+  const row = rows.find(r => r.date === state.mathDate);
+  const c = d.calc[state.mathDate];
+  const R = c.riders;
+
+  const subtotal = c.base.value + R["Rider 5"].value + R["Rider 15A"].value;
+  const withDsic = subtotal * (1 + R["Rider 22"].value / 100);
+  const dist = round4(withDsic * (1 + R["Rider 10"].value / 100));
+
+  let html = `<tr class="grp"><td colspan="3">Distribution</td></tr>` +
+    mathRow("", esc(c.base.label), c.base, c4(c.base.value)) +
+    mathRow("+", esc(R["Rider 5"].label), R["Rider 5"], c4(R["Rider 5"].value)) +
+    mathRow("+", esc(R["Rider 15A"].label), R["Rider 15A"], c4(R["Rider 15A"].value)) +
+    mathRow("=", "Subtotal", null, c4(subtotal), "sub") +
+    mathRow("", `${pctFactor(R["Rider 22"].value)} ${esc(R["Rider 22"].label)}`, R["Rider 22"], signed4(withDsic - subtotal)) +
+    mathRow("", `${pctFactor(R["Rider 10"].value)} ${esc(R["Rider 10"].label)}`, R["Rider 10"], signed4(dist - withDsic)) +
+    mathRow("=", "Distribution", null, c4(dist), "sub");
+
+  if (state.plan === "flat") {
+    const ptc = c.supply.value + c.trans.value;
+    const total = round4(ptc + dist);
+    html += `<tr class="grp"><td colspan="3">Price to Compare</td></tr>` +
+      mathRow("", esc(c.supply.label), c.supply, c4(c.supply.value)) +
+      mathRow("+", esc(c.trans.label), c.trans, c4(c.trans.value)) +
+      mathRow("=", "Price to Compare", null, c4(ptc), "sub") +
+      mathRow("=", "Total: Price to Compare + Distribution", null, c4(total), "total");
+  } else {
+    html += `<tr class="grp"><td colspan="3">Price to Compare</td></tr>` +
+      mathRow("", esc(c.trans.label), c.trans, c4(c.trans.value)) +
+      PERIODS.filter(p => c.tou[p]).map(p => mathRow("", esc(c.tou[p].label), c.tou[p], c4(c.tou[p].value))).join("") +
+      `<tr class="grp"><td colspan="3">Totals: supply + transmission + distribution</td></tr>` +
+      PERIODS.filter(p => c.tou[p]).map(p => mathRow("=", `${p}: ${c4(c.tou[p].value)} + ${c4(c.trans.value)} + ${c4(dist)}`, null,
+        c4(round4(c.tou[p].value + c.trans.value + dist)), "sub")).join("");
+  }
+
+  const options = rows.map(r => `<option value="${r.date}"${r.date === state.mathDate ? " selected" : ""}>${fmtDate(r.date)}${r.date > TODAY ? " (scheduled)" : r === split(rows).current ? " (current)" : ""}</option>`).join("");
+  const shown = state.plan === "flat" ? `${fmt(row.total)}¢` : PERIODS.filter(p => row.periods[p]).map(p => `${p} ${fmt(row.periods[p].total)}¢`).join(", ");
+  el.innerHTML = `
+    <div class="math-head">
+      <label for="math-date">Rate effective</label>
+      <select id="math-date">${options}</select>
+    </div>
+    <div class="table-scroll"><table class="math">${html}</table></div>
+    <p class="math-note">Shown elsewhere on this page rounded to two decimals: ${shown}. Click a row in the table above to see its calculation.</p>`;
+  document.getElementById("math-date").addEventListener("change", e => { state.mathDate = e.target.value; renderMath(); });
+}
+
+// ---------- state / persistence ----------
+// Only a value the visitor typed is stored; clearing the field or typing the
+// default removes it, so a future change to DEFAULT_KWH still reaches them.
+// (Key is versioned: an early build saved the old 800 default on every load.)
+const KWH_KEY = "dlc-kwh-v2";
+function loadKwh() { try { return localStorage.getItem(KWH_KEY) || DEFAULT_KWH; } catch (e) { return DEFAULT_KWH; } }
+function saveKwh(v) {
+  try {
+    if (!v || v === DEFAULT_KWH) localStorage.removeItem(KWH_KEY);
+    else localStorage.setItem(KWH_KEY, v);
+  } catch (e) {}
+}
+
+function readHash() {
+  const [cls, plan] = location.hash.replace("#", "").split("-");
+  if (CLASSES.includes((cls || "").toUpperCase())) state.cls = cls.toUpperCase();
+  if (plan === "tou" || plan === "flat") state.plan = plan;
+}
+
+function update() {
+  const hash = `#${state.cls}-${state.plan}`;
+  if (location.hash !== hash) history.replaceState(null, "", hash);
+  renderControls();
+  renderSummary();
+  renderCompare();
+  renderTable();
+  renderMath();
+}
+
+readHash();
+update();
+window.addEventListener("hashchange", () => { const before = state.cls + state.plan; readHash(); if (state.cls + state.plan !== before) update(); });
 </script>
-<footer style="margin-top: 40px; font-size: 0.85em; color: #555;">
-  <p>
-    This website is an independent project and is not affiliated with or endorsed by
-    <a href="https://www.duquesnelight.com" target="_blank" rel="noopener noreferrer">Duquesne Light Company (DLC)</a>.
-    All data is provided "as is" for informational purposes only and represents a best-effort estimate of residential electricity rates.
-    Official rates, billing, and tariffs from DLC are the authoritative source.
-    For questions regarding your bill or service, please contact DLC directly.
-  </p>
-  <p>
-    GitHub Project: <a href="https://github.com/pyther/dlc-rates" target="_blank" rel="noopener noreferrer">https://github.com/pyther/dlc-rates</a>
-  </p>
-</footer>
-
 </body>
 </html>
